@@ -1,0 +1,2401 @@
+/* =============================================
+   FEDERICA MUCCIOLI — Foglio di stile principale
+   
+   INDICE:
+   1. Variabili globali e reset
+   2. Elementi base
+   3. Navbar
+   4. Hero
+   5. Sezioni generiche
+   6. Chi sono
+   7. Scenari CTA
+   8. Servizi
+   9. Portfolio
+   10. Carta da Forno
+   11. Contatti
+   12. Footer
+   13. Animazioni
+   14. Responsive mobile
+   ============================================= */
+
+
+/* =============================================
+   1. VARIABILI GLOBALI E RESET
+   Modifica qui per cambiare colori e font
+   in tutto il sito
+   ============================================= */
+:root {
+  /* Palette colori — derivata dal logo */
+  --crema:        #F5F0E8;   /* sfondo principale */
+  --crema-scura:  #EDE5D4;   /* sfondo sezioni alternate */
+  --verde:        #3D5A52;   /* colore primario */
+  --verde-scuro:  #2A3F39;   /* colore primario scuro */
+  --terracotta:   #C8613A;   /* colore accent */
+  --terra-light:  #E8875F;   /* accent chiaro */
+  --marrone:      #7A5C3E;   /* colore secondario */
+  --testo:        #2C2219;   /* testo principale */
+  --testo-muted:  #6B5744;   /* testo secondario */
+
+  /* Font */
+  --font-titoli:  'Playfair Display', Georgia, serif;
+  --font-corpo:   'Lora', Georgia, serif;
+  --font-ui:      'DM Sans', sans-serif;
+
+  /* Layout */
+  --max-width:    1100px;
+  --raggio:       4px;
+}
+
+/* Reset base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scroll fluido per i link di navigazione */
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* =============================================
+   2. ELEMENTI BASE
+   ============================================= */
+body {
+  background-color: var(--crema);
+  color: var(--testo);
+  font-family: var(--font-corpo);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+
+/* =============================================
+   3. NAVBAR
+   Layout: logo | toggle fisso | link + contatti | hamburger
+   ============================================= */
+
+/* Navbar — flex, toggle appare dinamicamente dopo il logo */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--crema);
+  border-bottom: 1px solid var(--crema-scura);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  gap: 1.25rem;
+  transition: box-shadow 0.3s;
+}
+
+nav.scrolled {
+  box-shadow: 0 2px 16px rgba(44, 34, 25, 0.08);
+}
+
+/* Link area a destra — margin-left auto per spingerli a destra */
+.nav-links {
+  display: flex;
+  gap: 1.75rem;
+  list-style: none;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Logo a sinistra */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-fm {
+  font-family: var(--font-titoli);
+  font-size: 1.15rem;
+  color: var(--verde-scuro);
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+.nav-uccellino {
+  height: 30px;
+  width: auto;
+  display: block;
+  transform: scaleX(-1);
+}
+
+/* Toggle — subito dopo il logo a sinistra */
+.nav-toggle {
+  display: flex;
+  align-items: center;
+  background: var(--crema-scura);
+  border: 1.5px solid var(--verde);
+  border-radius: 50px;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+
+.nav-toggle-btn {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  background: none;
+  border: none;
+  padding: 0.3rem 0.9rem;
+  border-radius: 50px;
+  cursor: pointer;
+  color: var(--testo-muted);
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+
+.nav-toggle-btn.attivo {
+  background: var(--verde);
+  color: var(--crema);
+}
+
+.nav-toggle-btn:not(.attivo):hover {
+  color: var(--verde-scuro);
+}
+
+.nav-toggle-sep {
+  color: var(--testo-muted);
+  font-size: 0.85rem;
+  padding: 0 2px;
+  user-select: none;
+}
+
+.nav-links a {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--testo-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--terracotta); }
+
+/* Contatti — sempre visibile, in evidenza */
+.nav-item-sempre a {
+  color: var(--verde-scuro);
+  font-weight: 600;
+}
+
+/* Parte destra mobile: toggle mini + hamburger — nascosta su desktop */
+.nav-mobile-destra {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Toggle mini per mobile */
+.nav-toggle-mobile {
+  display: flex;
+  background: var(--crema-scura);
+  border: 1.5px solid var(--verde);
+  border-radius: 50px;
+  padding: 2px;
+}
+
+.nav-toggle-mobile-btn {
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  background: none;
+  border: none;
+  padding: 0.2rem 0.55rem;
+  border-radius: 50px;
+  cursor: pointer;
+  color: var(--testo-muted);
+  transition: all 0.2s;
+}
+
+.nav-toggle-mobile-btn.attivo {
+  background: var(--verde);
+  color: var(--crema);
+}
+
+/* Hamburger — nascosto su desktop, visibile su mobile via media query */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--verde-scuro);
+  transition: all 0.3s;
+}
+
+/* Menu mobile espanso — sotto la navbar, fuori dal flusso */
+.nav-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0; right: 0;
+  z-index: 99;
+  background: var(--crema);
+  border-bottom: 1px solid var(--crema-scura);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 16px rgba(44, 34, 25, 0.1);
+}
+
+.nav-mobile-menu.aperto {
+  display: block;
+}
+
+.nav-mobile-gruppo {
+  margin-bottom: 0.5rem;
+}
+
+.nav-mobile-gruppo-titolo {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.nav-mobile-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--testo-muted);
+  text-decoration: none;
+  padding: 0.4rem 0;
+  transition: color 0.2s;
+}
+
+.nav-mobile-link:hover { color: var(--verde-scuro); }
+
+.nav-mobile-divisore {
+  height: 1px;
+  background: var(--crema-scura);
+  margin: 0.75rem 0;
+}
+
+.nav-mobile-link--contatti {
+  font-weight: 600;
+  color: var(--verde-scuro);
+}
+
+
+/* =============================================
+   4. HERO
+   ============================================= */
+
+/* Il padding-top compensa la navbar fissa */
+#hero {
+  padding-top: 64px;
+}
+
+.hero {
+  min-height: calc(100vh - 64px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  gap: 4rem;
+}
+
+/* Titolo principale */
+.hero-testo h1 {
+  font-family: var(--font-titoli);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--verde-scuro);
+  margin-bottom: 1.5rem;
+}
+
+/* La parte in corsivo del titolo — usa il terracotta */
+.hero-testo h1 em {
+  color: var(--terracotta);
+  font-style: italic;
+}
+
+/* Gruppo titolo hero con logo */
+.hero-titolo-wrap {
+  margin-bottom: 1.5rem;
+}
+
+/* Prima riga: testo + logo affiancati */
+.hero-prima-riga {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+/* Testo della prima riga del titolo */
+.hero-riga-testo {
+  font-family: var(--font-titoli);
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--verde-scuro);
+  white-space: nowrap;
+}
+
+/* Logo a destra della prima riga */
+.hero-logo-float {
+  width: 120px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* Righe seguenti allineate a sinistra, sotto al logo */
+.hero-h1 {
+  font-family: var(--font-titoli);
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--verde-scuro);
+  margin: 0;
+}
+
+.hero-h1 em {
+  color: var(--terracotta);
+  font-style: italic;
+}
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--testo-muted);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--testo-muted);
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+}
+
+/* Bottone primario — verde pieno */
+.btn-primario {
+  display: inline-block;
+  background: var(--verde);
+  color: var(--crema);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.9rem 2rem;
+  border-radius: var(--raggio);
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btn-primario:hover {
+  background: var(--verde-scuro);
+  transform: translateY(-1px);
+}
+
+/* Bottone secondario — solo bordo */
+.btn-secondario {
+  display: inline-block;
+  border: 1.5px solid var(--verde);
+  color: var(--verde);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.9rem 2rem;
+  border-radius: var(--raggio);
+  margin-left: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-secondario:hover {
+  background: var(--verde);
+  color: var(--crema);
+}
+
+/* Contenitore foto hero con effetto offset */
+.hero-immagine {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-foto-wrap {
+  position: relative;
+  width: 380px;
+  height: 460px;
+}
+
+/* Rettangolo sfondo decorativo offset */
+.hero-foto-sfondo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100%;
+  height: 100%;
+  background: var(--crema-scura);
+  border: 2px solid var(--verde);
+  border-radius: var(--raggio);
+}
+
+/* Contenitore immagine principale */
+.hero-foto {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--verde-scuro);
+  border-radius: var(--raggio);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Quando si aggiunge l'immagine vera, sostituire il placeholder */
+.hero-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder visibile finché non c'è la foto */
+.foto-placeholder {
+  text-align: center;
+  padding: 2rem;
+  color: var(--crema);
+  opacity: 0.4;
+}
+
+.foto-placeholder svg {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 0.5rem;
+  display: block;
+}
+
+.foto-placeholder p {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+}
+
+
+/* =============================================
+   5. SEZIONI GENERICHE
+   Stili riutilizzati in tutto il sito
+   ============================================= */
+section {
+  padding: 5rem 2rem;
+}
+
+.contenitore {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* Piccola etichetta colorata sopra i titoli sezione */
+.etichetta-sezione {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* Titolo principale di ogni sezione */
+.titolo-sezione {
+  font-family: var(--font-titoli);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 600;
+  color: var(--verde-scuro);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.titolo-sezione em {
+  font-style: italic;
+  color: var(--terracotta);
+}
+
+/* Testo introduttivo sotto il titolo */
+.testo-intro {
+  font-size: 1.05rem;
+  color: var(--testo-muted);
+  max-width: 640px;
+  line-height: 1.8;
+}
+
+/* Divisore decorativo con ornamento centrale */
+.divisore {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3rem 0;
+}
+
+.divisore-linea {
+  flex: 1;
+  height: 1px;
+  background: var(--crema-scura);
+}
+
+.divisore-ornamento {
+  color: var(--terracotta);
+  font-size: 1.2rem;
+}
+
+/* Uccellino nei divisori tra sezioni */
+.divisore-uccellino {
+  height: 28px;
+  width: auto;
+  display: block;
+  opacity: 0.85;
+}
+
+
+/* =============================================
+   6. CHI SONO — sfondo crema scura
+   ============================================= */
+#chi-sono {
+  background: var(--crema-scura);
+}
+
+/* chi-sono su sfondo chiaro usa colori standard —
+   nessun override necessario */
+
+/* Layout a due colonne: testo + timeline */
+.chi-sono-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+.chi-sono-testo p {
+  color: var(--testo-muted);
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+}
+
+/* Citazione in evidenza con bordo terracotta */
+.chi-sono-testo blockquote {
+  border-left: 3px solid var(--terracotta);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-family: var(--font-titoli);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--verde-scuro);
+  line-height: 1.5;
+}
+
+/* Timeline del percorso professionale */
+.percorso {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.percorso-item {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.percorso-anno {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--terracotta);
+  min-width: 50px;
+  padding-top: 0.2rem;
+}
+
+.percorso-desc {
+  font-size: 0.9rem;
+  color: var(--testo-muted);
+  line-height: 1.6;
+}
+
+.percorso-desc strong {
+  color: var(--testo);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+
+/* =============================================
+   7. SCENARI CTA
+   ============================================= */
+/* =============================================
+   7. SERVIZI — sfondo crema scura
+   ============================================= */
+#servizi {
+  background: var(--crema-scura);
+}
+
+/* =============================================
+   8. SCENARI — sfondo crema chiaro
+   ============================================= */
+#scenari {
+  background: var(--crema);
+}
+
+/* Griglia a 3 colonne per le card scenari */
+.scenari-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.scenario-card {
+  background: var(--crema);
+  border: 1.5px solid var(--crema-scura);
+  border-radius: var(--raggio);
+  padding: 2rem 1.75rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.scenario-card:hover {
+  border-color: var(--verde);
+  transform: translateY(-3px);
+}
+
+.scenario-icona {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 1.25rem;
+  color: var(--verde);
+}
+
+.scenario-icona svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* La domanda in corsivo — voce del cliente */
+.scenario-domanda {
+  font-family: var(--font-titoli);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--verde-scuro);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.scenario-desc {
+  font-size: 0.78rem;
+  color: var(--testo-muted);
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+/* Link testuale con sottolineatura */
+.scenario-link {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  text-decoration: none;
+  border-bottom: 1px solid var(--terracotta);
+  padding-bottom: 1px;
+  transition: opacity 0.2s;
+}
+
+.scenario-link:hover {
+  opacity: 0.7;
+}
+
+
+/* =============================================
+   8. SERVIZI
+   ============================================= */
+.servizi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.servizio-item {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: 1.75rem;
+  border: 1px solid var(--crema-scura);
+  border-radius: var(--raggio);
+  transition: border-color 0.2s;
+}
+
+.servizio-item:hover {
+  border-color: var(--verde);
+}
+
+/* Numero grande decorativo */
+.servizio-num {
+  font-family: var(--font-titoli);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--crema-scura);
+  line-height: 1;
+  min-width: 2.5rem;
+}
+
+.servizio-titolo {
+  font-family: var(--font-titoli);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--verde-scuro);
+  margin-bottom: 0.5rem;
+}
+
+.servizio-desc {
+  font-size: 0.9rem;
+  color: var(--testo-muted);
+  line-height: 1.65;
+}
+
+/* Box nota collaboratori */
+.collaboratori-nota {
+  margin-top: 2.5rem;
+  padding: 1.75rem;
+  border: 1px solid var(--crema-scura);
+  border-radius: var(--raggio);
+  background: var(--crema);
+  font-size: 0.95rem;
+  color: var(--testo-muted);
+  border: 1.5px solid var(--verde);
+}
+
+.collaboratori-nota strong {
+  color: var(--verde-scuro);
+}
+
+
+/* =============================================
+   9. PORTFOLIO
+   ============================================= */
+/* =============================================
+   9. PORTFOLIO — sfondo crema chiaro
+   ============================================= */
+#portfolio {
+  background: var(--crema);
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.portfolio-card {
+  background: var(--crema);
+  border-radius: var(--raggio);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Contenitore immagine portfolio */
+.portfolio-img {
+  height: 220px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(245, 240, 232, 0.5);
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+}
+
+/* Quando si aggiunge l'immagine vera */
+.portfolio-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.portfolio-card:hover .portfolio-img img {
+  transform: scale(1.04);
+}
+
+.portfolio-corpo {
+  padding: 1.25rem 1.5rem;
+}
+
+/* Etichetta categoria portfolio */
+.portfolio-tag {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.portfolio-titolo {
+  font-family: var(--font-titoli);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--verde-scuro);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.portfolio-desc {
+  font-size: 0.85rem;
+  color: var(--testo-muted);
+  line-height: 1.6;
+}
+
+
+/* =============================================
+   10. CARTA DA FORNO
+   ============================================= */
+#carta-da-forno {
+  background: var(--verde-scuro);
+  color: var(--crema);
+}
+
+.cdf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+.cdf-testo p {
+  color: rgba(245, 240, 232, 0.85);
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+}
+
+/* Badge "Co-fondatrice" */
+.cdf-badge {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--crema);
+  background: var(--terracotta);
+  padding: 0.3rem 0.9rem;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.cdf-citazione {
+  font-style: italic;
+  color: rgba(245, 240, 232, 0.6) !important;
+  font-size: 0.95rem !important;
+}
+
+/* Box anteprima grafica del progetto */
+.cdf-anteprima {
+  background: var(--verde);
+  border-radius: var(--raggio);
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.cdf-titolo-grande {
+  font-family: var(--font-titoli);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--crema);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+}
+
+.cdf-anteprima p {
+  color: rgba(245, 240, 232, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+/* Tag categorie di Carta da Forno */
+.cdf-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.cdf-tags span {
+  background: rgba(245, 240, 232, 0.15);
+  color: var(--crema);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 2px;
+}
+
+/* Bottone per link esterno Carta da Forno */
+.btn-cdf {
+  display: inline-block;
+  border: 1.5px solid var(--crema);
+  color: var(--crema);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.8rem 1.75rem;
+  border-radius: var(--raggio);
+  margin-top: 1.5rem;
+  transition: all 0.2s;
+}
+
+.btn-cdf:hover {
+  background: var(--crema);
+  color: var(--verde-scuro);
+}
+
+
+/* =============================================
+   11. CONTATTI
+   ============================================= */
+#contatti {
+  text-align: center;
+}
+
+.contatti-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.contatti-inner .testo-intro {
+  max-width: 100%;
+  text-align: center;
+  margin: 0 auto 2.5rem;
+}
+
+/* ---- Form di contatto ---- */
+.contatti-form-wrap {
+  text-align: left;
+  margin-bottom: 3rem;
+}
+
+.contatti-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Riga con due campi affiancati */
+.form-riga {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-gruppo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-gruppo label {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--testo-muted);
+}
+
+/* Stile campi input e textarea */
+.form-gruppo input,
+.form-gruppo textarea {
+  font-family: var(--font-corpo);
+  font-size: 0.95rem;
+  color: var(--testo);
+  background: var(--crema);
+  border: 1.5px solid var(--crema-scura);
+  border-radius: var(--raggio);
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s;
+  resize: vertical;
+  outline: none;
+}
+
+.form-gruppo input::placeholder,
+.form-gruppo textarea::placeholder {
+  color: rgba(107, 87, 68, 0.5);
+}
+
+.form-gruppo input:focus,
+.form-gruppo textarea:focus {
+  border-color: var(--verde);
+}
+
+/* Bottone submit del form */
+.btn-form {
+  align-self: flex-start;
+  cursor: pointer;
+  border: none;
+  font-size: 0.85rem;
+}
+
+/* ---- Griglia dettagli contatto ---- */
+.contatti-dettagli {
+  text-align: center;
+}
+
+.contatti-dettagli-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+/* Singolo elemento di contatto (mail, tel, instagram) */
+.contatto-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.contatto-item:hover {
+  opacity: 0.7;
+}
+
+.contatto-label {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.contatto-valore {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  color: var(--verde-scuro);
+}
+
+/* Testo posizione geografica */
+.contatti-location {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--testo-muted);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+
+/* Badge co-fondatrice con uccellino affiancato */
+.cdf-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.uccellino-cdf-badge {
+  height: 48px;
+  width: auto;
+  opacity: 0.9;
+}
+
+/* =============================================
+   12. FOOTER
+   ============================================= */
+footer {
+  background: var(--testo);
+  color: rgba(245, 240, 232, 0.45);
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+}
+
+.footer-cuore {
+  color: var(--terracotta);
+}
+
+/* Uccellino integrato nella blockquote di chi sono */
+.uccellino-blockquote {
+  float: right;
+  height: 70px;
+  width: auto;
+  margin-left: 1rem;
+  margin-bottom: 0.25rem;
+  opacity: 0.9;
+}
+
+/* Uccellino in fondo alla griglia scenari — allineato a destra */
+.uccellino-fondo-sezione {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-right: 0.5rem;
+}
+
+.uccellino-fondo-sezione img {
+  height: 65px;
+  width: auto;
+  opacity: 0.85;
+}
+
+/* Uccellino integrato nella nota collaboratori */
+.collaboratori-nota {
+  margin-top: 2.5rem;
+  padding: 1.75rem;
+  border: 1px solid var(--crema-scura);
+  border-radius: var(--raggio);
+  background: var(--crema);
+  font-size: 0.95rem;
+  color: var(--testo-muted);
+  border: 1.5px solid var(--verde);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.collaboratori-nota strong {
+  color: var(--verde-scuro);
+}
+
+.uccellino-nota {
+  height: 60px;
+  width: auto;
+  flex-shrink: 0;
+  opacity: 0.88;
+}
+
+/* Titolo con uccellino in volo a destra */
+.titolo-con-uccello {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.uccellino-titolo-dx {
+  height: 70px;
+  width: auto;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* Uccellino tozzo nella box carta da forno */
+.uccellino-cdf {
+  height: 65px;
+  width: auto;
+  margin: 0 auto 1rem;
+  display: block;
+  opacity: 0.9;
+}
+
+/* Uccellino che becca terra in fondo ai contatti */
+.uccellino-contatti-fondo {
+  height: 60px;
+  width: auto;
+  margin: 1.5rem auto 0;
+  display: block;
+  opacity: 0.82;
+}
+
+
+/* =============================================
+   13. ANIMAZIONI DI ENTRATA
+   Gli elementi partono invisibili e scendono
+   quando entrano nel viewport (gestito via JS)
+   ============================================= */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in.visibile {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* =============================================
+   14. RESPONSIVE MOBILE
+   Breakpoint principale a 768px
+   ============================================= */
+@media (max-width: 768px) {
+
+  /* Navbar mobile — logo + toggle + hamburger */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.25rem;
+    gap: 0.75rem;
+  }
+
+  /* Toggle rimane visibile su mobile */
+  .nav-toggle { display: flex; }
+
+  /* Link desktop nascosti su mobile */
+  .nav-links { display: none; }
+
+  /* Hamburger visibile */
+  .nav-hamburger { display: flex; }
+
+
+  /* Hero mobile — colonna singola, centrata */
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 0;
+    gap: 2rem;
+    min-height: auto;
+    max-width: 100vw;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .hero-testo {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-desc {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .hero-prima-riga {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hero-h1 {
+    text-align: center;
+  }
+
+  .hero-immagine {
+    order: -1; /* Foto sopra il testo su mobile */
+  }
+
+  .hero-foto-wrap {
+    width: 280px;
+    height: 340px;
+  }
+
+  .btn-secondario {
+    margin-left: 0;
+    margin-top: 0.75rem;
+  }
+
+  /* Sezioni generiche — meno padding */
+  section {
+    padding: 3.5rem 1.5rem;
+  }
+
+  /* Chi sono — colonna singola */
+  .chi-sono-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  /* Scenari — colonna singola */
+  .scenari-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Servizi — colonna singola */
+  .servizi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Portfolio — colonna singola */
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Carta da Forno — colonna singola */
+  .cdf-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  /* Contatti — form a colonna singola */
+  .form-riga {
+    grid-template-columns: 1fr;
+  }
+
+  .contatti-dettagli-grid {
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: center;
+  }
+
+  /* Contatti — bottoni impilati */
+  .contatti-cta-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn-secondario {
+    margin-left: 0;
+  }
+
+  /* Uccellini sezione — più piccoli su mobile */
+  .uccellino-sezione {
+    height: 60px;
+  }
+
+  .uccellino-contatti {
+    height: 50px;
+  }
+
+  .footer-uccellino {
+    height: 36px;
+  }
+
+  /* Hero — prima riga su mobile */
+  .hero-prima-riga {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .hero-logo-float {
+    width: 80px;
+  }
+
+  /* Uccellini più piccoli su mobile */
+  .uccellino-blockquote { height: 50px; }
+  .uccellino-fondo-sezione img { height: 50px; }
+  .uccellino-nota { height: 44px; }
+  .uccellino-titolo-dx { height: 50px; }
+  .uccellino-cdf { height: 50px; }
+  .uccellino-contatti-fondo { height: 46px; }
+
+  /* Collaboratori nota — colonna su mobile */
+  .collaboratori-nota {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  /* Titolo con uccello — meno spazio su mobile */
+  .titolo-con-uccello {
+    align-items: flex-start;
+  }
+
+  /* Hero — logo e titolo su mobile */
+  .hero-titolo-gruppo {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  /* Uccellino navbar più piccolo su mobile */
+  .nav-uccellino {
+    height: 22px;
+  }
+}
+
+
+
+/* =============================================
+   SEZIONE EVENTI — sfondo verde petrolio
+   Stesso pattern di #carta-da-forno
+   ============================================= */
+#eventi {
+  background: var(--verde-scuro);
+  color: var(--crema);
+}
+
+#eventi .titolo-sezione {
+  color: var(--crema);
+}
+
+#eventi .titolo-sezione em {
+  color: var(--terra-light);
+}
+
+#eventi .etichetta-sezione {
+  color: var(--terra-light);
+}
+
+#eventi .testo-intro {
+  color: rgba(245, 240, 232, 0.82);
+}
+
+/* Tipi di eventi — card su sfondo scuro */
+#eventi .eventi-tipi {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+  margin: 2rem 0 3rem;
+}
+
+#eventi .evento-tipo {
+  background: rgba(245, 240, 232, 0.1);
+  border: 1px solid rgba(245, 240, 232, 0.25);
+}
+
+#eventi .evento-tipo:hover {
+  background: rgba(245, 240, 232, 0.18);
+  border-color: var(--terra-light);
+}
+
+#eventi .evento-tipo svg {
+  color: var(--terra-light);
+}
+
+#eventi .evento-tipo span {
+  color: var(--crema);
+}
+
+/* Griglia tre passi */
+#eventi .eventi-passi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+#eventi .evento-passo {
+  border-color: rgba(245, 240, 232, 0.2);
+}
+
+#eventi .passo-num {
+  color: var(--terra-light);
+}
+
+#eventi .passo-titolo {
+  color: var(--crema);
+}
+
+#eventi .passo-desc {
+  color: rgba(245, 240, 232, 0.78);
+}
+
+/* Box CTA */
+#eventi .eventi-cta {
+  background: rgba(245, 240, 232, 0.07);
+  border: 1px solid rgba(245, 240, 232, 0.18);
+}
+
+#eventi .evento-cta-card h3 {
+  color: var(--crema);
+}
+
+#eventi .evento-cta-card p {
+  color: rgba(245, 240, 232, 0.78);
+}
+
+#eventi .eventi-cta-sep {
+  color: rgba(245, 240, 232, 0.45);
+}
+
+/* Bottone eventi — stesso stile per entrambi i CTA */
+#eventi .btn-evento {
+  display: inline-block;
+  background: rgba(245, 240, 232, 0.12);
+  color: var(--crema);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.9rem 2rem;
+  border-radius: var(--raggio);
+  border: 1.5px solid rgba(245, 240, 232, 0.45);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#eventi .btn-evento:hover {
+  background: rgba(245, 240, 232, 0.22);
+  border-color: var(--crema);
+}
+
+/* =============================================
+   ELEMENTI COMUNI EVENTI (layout, non colori)
+   ============================================= */
+
+.eventi-tipi {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin: 2rem 0 3rem;
+}
+
+.evento-tipo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem 0.75rem;
+  border-radius: var(--raggio);
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+  min-height: 90px;
+}
+
+.evento-tipo svg {
+  width: 36px;
+  height: 36px;
+}
+
+.evento-tipo span {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.eventi-passi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.evento-passo {
+  padding: 1.75rem;
+  border: 1px solid;
+  border-radius: var(--raggio);
+}
+
+.passo-num {
+  font-family: var(--font-titoli);
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.75rem;
+  opacity: 0.75;
+}
+
+.passo-titolo {
+  font-family: var(--font-titoli);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.passo-desc {
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.eventi-cta {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  border-radius: var(--raggio);
+  padding: 2.5rem;
+}
+
+.evento-cta-card {
+  flex: 1;
+}
+
+.evento-cta-card h3 {
+  font-family: var(--font-titoli);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.evento-cta-card p {
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+.eventi-cta-sep {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* =============================================
+   CARTA DA FORNO — nuovi elementi
+   ============================================= */
+
+/* Spiegazione del gioco letterario */
+.cdf-generi-spiegazione {
+  border-left: 3px solid var(--terracotta);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.cdf-generi-spiegazione p {
+  font-size: 0.95rem;
+  color: rgba(245, 240, 232, 0.8);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* Categorie cliccabili */
+.cdf-categorie {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cdf-categoria {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--crema);
+  border: 1px solid rgba(245, 240, 232, 0.4);
+  padding: 0.35rem 0.9rem;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cdf-categoria:hover {
+  background: rgba(245, 240, 232, 0.15);
+  border-color: var(--crema);
+}
+
+/* =============================================
+   POPUP
+   ============================================= */
+
+/* Overlay scuro dietro il popup */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44, 34, 25, 0.75);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+/* Mostra il popup quando ha classe 'aperto' */
+.popup-overlay.aperto {
+  display: flex;
+}
+
+.popup {
+  background: var(--crema);
+  border-radius: var(--raggio);
+  padding: 2.5rem;
+  max-width: 620px;
+  width: 100%;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.popup-chiudi {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--testo-muted);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s;
+}
+
+.popup-chiudi:hover { color: var(--terracotta); }
+
+.popup-titolo {
+  font-family: var(--font-titoli);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--verde-scuro);
+  margin-bottom: 0.5rem;
+}
+
+.popup-intro {
+  font-size: 0.95rem;
+  color: var(--testo-muted);
+  margin-bottom: 1.75rem;
+  line-height: 1.65;
+}
+
+.popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* Select nel form */
+.form-gruppo select {
+  font-family: var(--font-corpo);
+  font-size: 0.95rem;
+  color: var(--testo);
+  background: var(--crema);
+  border: 1.5px solid var(--crema-scura);
+  border-radius: var(--raggio);
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B5744' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+.form-gruppo select:focus {
+  border-color: var(--verde);
+}
+
+/* Messaggio successo dopo invio */
+.popup-successo {
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--font-titoli);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--verde-scuro);
+}
+
+/* =============================================
+   WHATSAPP — bottone fisso
+   ============================================= */
+.whatsapp-btn {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  z-index: 150;
+  width: 52px;
+  height: 52px;
+  background: var(--verde);
+  color: var(--crema);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(44, 34, 25, 0.2);
+  transition: background 0.2s, transform 0.2s;
+  text-decoration: none;
+}
+
+.whatsapp-btn:hover {
+  background: var(--verde-scuro);
+  transform: translateY(-2px);
+}
+
+.whatsapp-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* =============================================
+   RESPONSIVE — nuovi elementi
+   ============================================= */
+@media (max-width: 768px) {
+
+  .eventi-passi {
+    grid-template-columns: 1fr;
+  }
+
+  .eventi-cta {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .eventi-cta-sep {
+    order: 2;
+  }
+
+  .popup {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .whatsapp-btn {
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 46px;
+    height: 46px;
+  }
+}
+
+
+/* =============================================
+   TOGGLE NAVBAR — due puntini tondi
+   ============================================= */
+.nav-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Bottone puntino — invisibile, solo il cerchio conta */
+.nav-dot {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Il cerchio colorato */
+.nav-dot-cerchio {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--verde);
+  background: transparent;
+  transition: all 0.25s;
+}
+
+/* Puntino attivo — pieno */
+.nav-dot-cerchio.attivo {
+  background: var(--verde);
+}
+
+/* Hover */
+.nav-dot:hover .nav-dot-cerchio {
+  border-color: var(--terracotta);
+}
+
+.nav-dot:hover .nav-dot-cerchio.attivo {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+}
+
+
+/* =============================================
+   TASTI MACCHINA DA SCRIVERE
+   ============================================= */
+/* =============================================
+   TASTIERA SELETTORE — nell'hero
+   ============================================= */
+
+/* Contenitore tastiera — allineato a sinistra come il testo */
+.tastiera-selettore {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2rem;
+}
+
+/* Righe desktop — visibili su desktop, nascoste su mobile */
+/* Ogni riga centrata */
+.tastiera-riga {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  align-items: center;
+}
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  align-items: center;
+}
+
+/* Tasto ghost */
+.tasto-ghost {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(61, 90, 82, 0.28);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-titoli);
+  font-size: 10px;
+  line-height: 1;
+  color: rgba(61, 90, 82, 0.28);
+  flex-shrink: 0;
+}
+
+.tasto-ghost.tc {
+  border-color: rgba(200, 97, 58, 0.28);
+  color: rgba(200, 97, 58, 0.3);
+}
+
+/* Didascalia centrata */
+.tastiera-didascalia {
+  font-family: var(--font-corpo);
+  font-style: italic;
+  font-size: 0.78rem;
+  color: var(--testo-muted);
+  opacity: 0.65;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* Stacco visivo tra hero e prima sezione */
+.hero-stacco {
+  height: 3px;
+  background: linear-gradient(to right, transparent, var(--crema-scura), var(--verde), var(--crema-scura), transparent);
+  opacity: 0.6;
+}
+
+/* Tasto base — si adatta alla riga della tastiera */
+.tasto-macchina {
+  position: relative;
+  width: 134px;
+  height: 134px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-family: var(--font-titoli);
+  font-size: 1.05rem;
+  font-style: italic;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.75rem;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+
+/* Animazione bounce all'apertura */
+@keyframes bounce-verde {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-6px); }
+  50%  { transform: translateY(3px); }
+  70%  { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes bounce-terra {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-6px); }
+  50%  { transform: translateY(3px); }
+  70%  { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
+#tasto-chi-sono {
+  animation: bounce-verde 0.7s ease 0.5s 1;
+}
+
+#tasto-cosa-posso-fare {
+  animation: bounce-terra 0.7s ease 0.9s 1;
+}
+
+/* Tasto Chi sono — verde petrolio */
+#tasto-chi-sono {
+  background: var(--crema-scura);
+  color: var(--verde-scuro);
+  border-color: var(--verde);
+  box-shadow: 0 5px 0 var(--verde-scuro), 0 8px 12px rgba(44,34,25,0.15);
+}
+
+#tasto-chi-sono.attivo {
+  background: var(--verde);
+  color: var(--crema);
+  border-color: var(--verde-scuro);
+  box-shadow: 0 2px 0 var(--verde-scuro), 0 3px 6px rgba(44,34,25,0.2);
+  transform: translateY(3px);
+}
+
+#tasto-chi-sono:not(.attivo):hover {
+  background: var(--verde);
+  color: var(--crema);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--verde-scuro), 0 10px 14px rgba(44,34,25,0.12);
+}
+
+/* Tasto Cosa posso fare — terracotta */
+#tasto-cosa-posso-fare {
+  background: var(--crema-scura);
+  color: var(--terracotta);
+  border-color: var(--terracotta);
+  box-shadow: 0 5px 0 #8B3D22, 0 8px 12px rgba(44,34,25,0.15);
+}
+
+#tasto-cosa-posso-fare.attivo {
+  background: var(--terracotta);
+  color: var(--crema);
+  border-color: #8B3D22;
+  box-shadow: 0 2px 0 #8B3D22, 0 3px 6px rgba(44,34,25,0.2);
+  transform: translateY(3px);
+}
+
+#tasto-cosa-posso-fare:not(.attivo):hover {
+  background: var(--terracotta);
+  color: var(--crema);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #8B3D22, 0 10px 14px rgba(44,34,25,0.12);
+}
+
+.tasto-label {
+  display: block;
+  pointer-events: none;
+  line-height: 1.3;
+}
+
+/* =============================================
+   AREA CONTENUTO — transizione tra le due aree
+   ============================================= */
+.area-contenuto {
+  animation: fadeArea 0.4s ease;
+}
+
+@keyframes fadeArea {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =============================================
+   CARTA DA FORNO — nuova struttura
+   ============================================= */
+
+/* Header centrato */
+.cdf-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.cdf-sottotitolo {
+  font-family: var(--font-titoli);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: rgba(245, 240, 232, 0.7);
+  margin-top: 0.5rem;
+}
+
+/* Corpo a due colonne: testo + categorie */
+.cdf-corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Categorie con nome + descrizione */
+.cdf-categorie-titolo {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terra-light);
+  margin-bottom: 1rem;
+}
+
+.cdf-categorie {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
+.cdf-categoria {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(245, 240, 232, 0.2);
+  border-radius: var(--raggio);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cdf-categoria:hover {
+  background: rgba(245, 240, 232, 0.08);
+  border-color: rgba(245, 240, 232, 0.5);
+}
+
+.cdf-cat-nome {
+  font-family: var(--font-titoli);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--crema);
+}
+
+.cdf-cat-desc {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: rgba(245, 240, 232, 0.6);
+}
+
+
+/* =============================================
+   EVENTI — tipi con SVG
+   ============================================= */
+.eventi-tipi {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin: 2rem 0 3rem;
+}
+
+.evento-tipo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.25rem 0.75rem;
+  background: var(--crema-scura);
+  border: 1px solid var(--crema-scura);
+  border-radius: var(--raggio);
+  transition: border-color 0.2s;
+  text-align: center;
+}
+
+.evento-tipo:hover {
+  border-color: var(--verde);
+}
+
+.evento-tipo svg {
+  width: 36px;
+  height: 36px;
+  color: var(--verde);
+}
+
+.evento-tipo span {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--testo-muted);
+}
+
+
+/* =============================================
+   NUMERI SERVIZI — ora in terracotta
+   ============================================= */
+.servizio-num {
+  font-family: var(--font-titoli);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--terracotta);
+  line-height: 1;
+  min-width: 2.5rem;
+  opacity: 0.7;
+}
+
+/* Stessa cosa per i passi eventi */
+.passo-num {
+  font-family: var(--font-titoli);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--terracotta);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.75rem;
+  opacity: 0.75;
+}
+
+
+/* =============================================
+   RESPONSIVE — nuovi elementi
+   ============================================= */
+@media (max-width: 768px) {
+
+  /* Tastiera selettore su mobile — centrata */
+  .tastiera-selettore {
+    align-items: center;
+    margin-top: 1.5rem;
+  }
+
+  .tasto-ghost {
+    width: 30px;
+    height: 30px;
+    font-size: 0.55rem;
+  }
+
+  .tasto-macchina {
+    width: 90px;
+    height: 90px;
+    font-size: 0.85rem;
+  }
+
+  .tasto-ghost {
+    width: 32px;
+    height: 32px;
+    font-size: 10px;
+  }
+
+  .tastiera-riga {
+    gap: 2px;
+  }
+
+
+
+  /* Carta da Forno — colonna singola */
+  .cdf-corpo {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* Tipi eventi — 3 colonne su mobile (da 6) */
+  #eventi .eventi-tipi,
+  .eventi-tipi {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+
+  /* Passi — colonna singola */
+  #eventi .eventi-passi,
+  .eventi-passi {
+    grid-template-columns: 1fr;
+  }
+
+  /* CTA eventi — colonna singola */
+  #eventi .eventi-cta,
+  .eventi-cta {
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+
+  /* "oppure" rimane sempre tra le due card */
+  .eventi-cta-sep {
+    order: 0;
+  }
+
+  .evento-cta-card:first-child {
+    order: -1;
+  }
+
+  .evento-cta-card:last-child {
+    order: 1;
+  }
+
+  .evento-cta-card {
+    width: 100%;
+  }
+}
+
+
+/* =============================================
+   TASTIERA SELETTORE — CSS ISOLATO
+   Tutto specifico, niente eredita da fuori
+   ============================================= */
+.tastiera-selettore {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-top: 2rem !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.tastiera-selettore .tastiera-riga {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+.tastiera-selettore .tasto-ghost {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+  max-width: 46px !important;
+  max-height: 46px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid rgba(61, 90, 82, 0.28) !important;
+  background: transparent !important;
+  font-family: Georgia, serif !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  line-height: 1 !important;
+  color: rgba(61, 90, 82, 0.28) !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.tastiera-selettore .tasto-ghost.tc {
+  border-color: rgba(200, 97, 58, 0.28) !important;
+  color: rgba(200, 97, 58, 0.3) !important;
+}
+
+.tastiera-selettore .tastiera-didascalia {
+  font-family: Georgia, serif !important;
+  font-style: italic !important;
+  font-size: 12px !important;
+  color: rgba(107, 87, 68, 0.6) !important;
+  text-align: center !important;
+  margin-top: 0.5rem !important;
+  width: 100% !important;
+}

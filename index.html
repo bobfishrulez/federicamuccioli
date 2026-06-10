@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Federica Muccioli — Scrivo, progetto e costruisco narrazioni intorno al mondo agroalimentare. Scrittura, storytelling, eventi culturali, fotografia.">
+  <meta name="keywords" content="cultura agroalimentare, storytelling, eventi culturali, scrittura, food storytelling, Cesena, Emilia-Romagna">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:title" content="Federica Muccioli — Racconto storie. Creo incontri. Sempre intorno al cibo.">
+  <meta property="og:description" content="Scrivo, progetto e costruisco narrazioni intorno al mondo agroalimentare.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.federicamuccioli.it">
+  <title>Federica Muccioli — Racconto storie. Creo incontri. Sempre intorno al cibo.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-area="chi-sono">
+
+  <!-- =============================================
+       NAVBAR — navigazione fissa in alto
+       - Logo a sinistra
+       - Toggle fisso al centro
+       - Link area + Contatti a destra
+       - Mobile: toggle sempre visibile + hamburger
+       ============================================= -->
+  <nav id="navbar">
+
+    <!-- SINISTRA: logo -->
+    <a href="#hero" class="nav-logo">
+      <span class="nav-fm">f.m.</span>
+      <img src="img/uccellino_posato_dx.png" alt="" class="nav-uccellino" aria-hidden="true">
+    </a>
+
+    <!-- CENTRO: toggle — nascosto all'apertura, appare dopo selezione -->
+    <div class="nav-toggle" id="nav-toggle" style="display:none">
+      <button class="nav-toggle-btn attivo" data-area="chi-sono" id="nav-toggle-cs">Chi sono</button>
+      <span class="nav-toggle-sep">·</span>
+      <button class="nav-toggle-btn" data-area="cosa-posso-fare" id="nav-toggle-cpf">Cosa faccio</button>
+    </div>
+
+    <!-- DESTRA: link — nascosti all'apertura -->
+    <ul class="nav-links" id="nav-links" style="display:none">
+      <li class="nav-item-chi-sono"><a href="#chi-sono">Chi sono</a></li>
+      <li class="nav-item-chi-sono"><a href="#portfolio">Progetti</a></li>
+      <li class="nav-item-chi-sono"><a href="#carta-da-forno">Carta da Forno</a></li>
+      <li class="nav-item-cosa-posso-fare" style="display:none"><a href="#servizi">Servizi</a></li>
+      <li class="nav-item-cosa-posso-fare" style="display:none"><a href="#scenari">La tua realtà</a></li>
+      <li class="nav-item-cosa-posso-fare" style="display:none"><a href="#eventi">Un evento per te</a></li>
+      <!-- Contatti — sempre visibile quando i link sono aperti -->
+      <li class="nav-item-sempre"><a href="#contatti">Contatti</a></li>
+    </ul>
+
+    <!-- MOBILE: hamburger standalone — toggle mini rimosso -->
+    <button class="nav-hamburger" id="hamburger" aria-label="Apri menu">
+      <span></span><span></span><span></span>
+    </button>
+
+  </nav>
+
+  <!-- Menu mobile espanso — mostra entrambe le aree -->
+  <div class="nav-mobile-menu" id="nav-mobile-menu">
+    <div class="nav-mobile-gruppo">
+      <span class="nav-mobile-gruppo-titolo">Chi sono</span>
+      <a href="#chi-sono" class="nav-mobile-link" data-area-link="chi-sono">Chi sono</a>
+      <a href="#portfolio" class="nav-mobile-link" data-area-link="chi-sono">Progetti</a>
+      <a href="#carta-da-forno" class="nav-mobile-link" data-area-link="chi-sono">Carta da Forno</a>
+    </div>
+    <div class="nav-mobile-divisore"></div>
+    <div class="nav-mobile-gruppo">
+      <span class="nav-mobile-gruppo-titolo">Cosa faccio</span>
+      <a href="#servizi" class="nav-mobile-link" data-area-link="cosa-posso-fare">Servizi</a>
+      <a href="#scenari" class="nav-mobile-link" data-area-link="cosa-posso-fare">La tua realtà</a>
+      <a href="#eventi" class="nav-mobile-link" data-area-link="cosa-posso-fare">Un evento per te</a>
+    </div>
+    <div class="nav-mobile-divisore"></div>
+    <a href="#contatti" class="nav-mobile-link nav-mobile-link--contatti">Contatti</a>
+  </div>
+
+  <!-- =============================================
+       HERO — sempre visibile
+       ============================================= -->
+  <section id="hero">
+    <div class="hero">
+
+      <div class="hero-testo fade-in">
+        <div class="hero-titolo-wrap">
+          <div class="hero-prima-riga">
+            <img src="img/logo_transparent.png" alt="Federica Muccioli" class="hero-logo-float">
+            <span class="hero-riga-testo">Racconto storie.</span>
+          </div>
+          <h1 class="hero-h1"><em>Creo incontri.</em><br>Sempre intorno al cibo.</h1>
+        </div>
+        <p class="hero-desc">Scrivo, progetto e costruisco narrazioni che prendono forma sulla carta, negli spazi e nei progetti. Per realtà che hanno qualcosa di buono da raccontare.</p>
+
+        <!-- Tastiera macchina da scrivere — selettore aree -->
+        <div class="tastiera-selettore" id="tasti-selettore">
+
+          <!-- Riga 1: ghost, Chi sono, ghost ghost ghost ghost -->
+          <div class="tastiera-riga">
+            <div class="tasto-ghost">q</div>
+            <button class="tasto-macchina" data-area="chi-sono" id="tasto-chi-sono">
+              <span class="tasto-label">Chi sono</span>
+            </button>
+            <div class="tasto-ghost tc">e</div>
+            <div class="tasto-ghost">r</div>
+            <div class="tasto-ghost tc">t</div>
+            <div class="tasto-ghost">y</div>
+          </div>
+
+          <!-- Riga 2: tutti ghost -->
+          <div class="tastiera-riga">
+            <div class="tasto-ghost tc">a</div>
+            <div class="tasto-ghost">s</div>
+            <div class="tasto-ghost tc">d</div>
+            <div class="tasto-ghost">f</div>
+            <div class="tasto-ghost tc">g</div>
+            <div class="tasto-ghost">h</div>
+            <div class="tasto-ghost tc">j</div>
+          </div>
+
+          <!-- Riga 3: ghost ghost ghost ghost, Cosa faccio, ghost -->
+          <div class="tastiera-riga">
+            <div class="tasto-ghost">z</div>
+            <div class="tasto-ghost tc">x</div>
+            <div class="tasto-ghost">c</div>
+            <div class="tasto-ghost tc">v</div>
+            <button class="tasto-macchina" data-area="cosa-posso-fare" id="tasto-cosa-posso-fare">
+              <span class="tasto-label">Cosa faccio</span>
+            </button>
+            <div class="tasto-ghost">m</div>
+          </div>
+
+          <p class="tastiera-didascalia">premi un tasto per iniziare</p>
+
+        </div>
+      </div>
+
+      <div class="hero-immagine fade-in" style="transition-delay: 0.2s;">
+        <div class="hero-foto-wrap">
+          <div class="hero-foto-sfondo"></div>
+          <div class="hero-foto">
+            <img src="img/federica.jpg" alt="Federica Muccioli">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Stacco visivo tra hero e sezioni — bordo + spazio -->
+  <div class="hero-stacco"></div>
+
+  <!-- =============================================
+       AREA "CHI SONO"
+       Visibile di default
+       ============================================= -->
+  <div id="area-chi-sono" class="area-contenuto" style="display:none">
+
+    <!-- CHI SONO -->
+    <section id="chi-sono">
+      <div class="contenitore">
+
+        <span class="etichetta-sezione">Chi sono</span>
+        <h2 class="titolo-sezione fade-in">Se non è zuppa,<br><em>è pan bagnato</em></h2>
+
+        <div class="chi-sono-grid">
+
+          <div class="chi-sono-testo fade-in">
+            <p>Mi occupo di editoria e cultura gastronomica, dando forma a progetti che mettono in relazione cibo, persone e contesti sociali. Scrivo, edito e progetto contenuti. Coordino eventi e costruisco storytelling attorno a realtà, luoghi e iniziative.</p>
+
+            <blockquote>
+              <img src="img/uccellino_su_ramo.png" alt="" class="uccellino-blockquote" aria-hidden="true">
+              "Per anni ho cercato una direzione univoca, per poi capire che il valore stava proprio nel tenere insieme traiettorie diverse."
+            </blockquote>
+
+            <p>Diploma all'Istituto Alberghiero di Forlimpopoli, laurea in Arti Visive a Bologna, Master in Storia e Cultura dell'Alimentazione con Massimo Montanari. Un percorso trasversale che ha trovato il suo senso nell'incontro tra cibo, scrittura e cultura.</p>
+          </div>
+
+          <div class="percorso fade-in" style="transition-delay: 0.15s;">
+            <div class="percorso-item">
+              <span class="percorso-anno">2007</span>
+              <div class="percorso-desc">
+                <strong>Istituto Alberghiero — Forlimpopoli</strong>
+                Diploma con specializzazione in cucina e arte bianca. La scuola di Pellegrino Artusi, dove tutto è cominciato.
+              </div>
+            </div>
+            <div class="percorso-item">
+              <span class="percorso-anno">—</span>
+              <div class="percorso-desc">
+                <strong>Laurea in Arti Visive</strong>
+                Università di Bologna. La fotografia come finestra sul mondo e profondità di sguardo.
+              </div>
+            </div>
+            <div class="percorso-item">
+              <span class="percorso-anno">2023</span>
+              <div class="percorso-desc">
+                <strong>Master in Storia e Cultura dell'Alimentazione</strong>
+                Università di Bologna, avviato da Massimo Montanari. Tirocinio con Dispensa Magazine.
+              </div>
+            </div>
+            <div class="percorso-item">
+              <span class="percorso-anno">2023</span>
+              <div class="percorso-desc">
+                <strong>Demetra Forno di Paese</strong>
+                Rubrica Semenza e organizzazione di eventi culturali: presentazioni di libri, cinema, poesia.
+              </div>
+            </div>
+            <div class="percorso-item">
+              <span class="percorso-anno">2023</span>
+              <div class="percorso-desc">
+                <strong>Co-fondatrice di Carta da Forno</strong>
+                Archivio di ricette e storie per corrispondenza — cibo e narrazione autobiografica.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio">
+      <div class="contenitore">
+
+        <span class="etichetta-sezione">Progetti</span>
+        <div class="titolo-con-uccello">
+          <h2 class="titolo-sezione fade-in">Storie che hanno<br><em>già preso forma</em></h2>
+          <img src="img/uccellino_in_volo.png" alt="" class="uccellino-titolo-dx" aria-hidden="true">
+        </div>
+
+        <div class="portfolio-grid">
+
+          <div class="portfolio-card fade-in">
+            <div class="portfolio-img">
+              <img src="img/semenza.png" alt="Semenza - La pagina di Demetra">
+            </div>
+            <div class="portfolio-corpo">
+              <span class="portfolio-tag">Scrittura · Editoria</span>
+              <h3 class="portfolio-titolo">Semenza — La pagina di Demetra</h3>
+              <p class="portfolio-desc">Rubrica mensile su carta per Demetra Forno di Paese. Testi a cura di Federica Muccioli, dal 2023. Oltre 20 numeri pubblicati tra cultura del cibo, donne, territorio.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-card fade-in" style="transition-delay: 0.1s;">
+            <div class="portfolio-img">
+              <img src="img/evento_demetra.jpeg" alt="Evento culturale Demetra - Longiano">
+            </div>
+            <div class="portfolio-corpo">
+              <span class="portfolio-tag">Eventi · Cultura</span>
+              <h3 class="portfolio-titolo">Eventi culturali — Demetra</h3>
+              <p class="portfolio-desc">Ideazione e organizzazione di eventi che usano il pane per attivare tematiche sociali. Presentazioni di libri, cinema, poesia, rassegne.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-card fade-in" style="transition-delay: 0.2s;">
+            <div class="portfolio-img" style="background: var(--verde-scuro); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem;">
+              <span style="font-family:'Playfair Display',Georgia,serif; font-style:italic; font-size:1.4rem; color:var(--crema); line-height:1.2; text-align:center;">Carta<br>da Forno</span>
+              <span style="font-family:'DM Sans',sans-serif; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,240,232,0.55);">Archivio · Corrispondenza</span>
+            </div>
+            <div class="portfolio-corpo">
+              <span class="portfolio-tag">Progetto · Co-fondatrice</span>
+              <h3 class="portfolio-titolo">Carta da Forno</h3>
+              <p class="portfolio-desc">Archivio di ricette e storie per corrispondenza. Ogni ricetta viaggia per posta prima di arrivare online, organizzata per genere letterario.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CARTA DA FORNO -->
+    <section id="carta-da-forno">
+      <div class="contenitore">
+
+        <div class="cdf-header fade-in">
+          <span class="cdf-badge">Co-fondatrice</span>
+          <h2 class="titolo-sezione" style="color: var(--crema);">Carta da Forno</h2>
+          <p class="cdf-sottotitolo">Uno spazio letterario in cui il cibo è protagonista per mezzo delle parole</p>
+        </div>
+
+        <div class="cdf-corpo">
+
+          <div class="cdf-testo fade-in">
+            <p>Nel presente che abitiamo, rinunciare alla carta da forno è diventato un gesto nobile. Noi abbiamo scelto di recuperarla in un'altra forma: uno spazio letterario in cui le ricette viaggiano per posta prima di arrivare online. Scrivi una ricetta con la storia che le appartiene, la spedisci. In cambio ne ricevi una.</p>
+
+            <div class="cdf-generi-spiegazione">
+              <p>Ogni ricetta nell'archivio è catalogata come fosse un romanzo. Perché ogni piatto, come ogni storia, ha un'anima: c'è la ricetta avventura, quella classica che profuma di famiglia, il giallo che svela l'ingrediente segreto solo alla fine, la poesia che si mangia con gli occhi. Classificare per genere non è un gioco fine a se stesso — è un modo per capire che tipo di storia stai per assaggiare.</p>
+            </div>
+
+            <p>Chiunque può partecipare. Basta una penna, un foglio e il desiderio di condividere non solo ingredienti ma qualcosa di più personale — la storia che quel piatto porta con sé.</p>
+          </div>
+
+          <div class="cdf-categorie-wrap fade-in">
+            <p class="cdf-categorie-titolo">Scopri le ricette per genere</p>
+            <div class="cdf-categorie">
+              <a href="https://sites.google.com/view/cartadaforno/ricette-dautore/avventura" target="_blank" rel="noopener" class="cdf-categoria">
+                <span class="cdf-cat-nome">Avventura</span>
+                <span class="cdf-cat-desc">L'emozione di esplorare, l'inaspettato nel piatto</span>
+              </a>
+              <a href="https://sites.google.com/view/cartadaforno/ricette-dautore/classico" target="_blank" rel="noopener" class="cdf-categoria">
+                <span class="cdf-cat-nome">Classico</span>
+                <span class="cdf-cat-desc">Storie di famiglia, voci di paese che profumano</span>
+              </a>
+              <a href="https://sites.google.com/view/cartadaforno/ricette-dautore/contemporaneo" target="_blank" rel="noopener" class="cdf-categoria">
+                <span class="cdf-cat-nome">Contemporaneo</span>
+                <span class="cdf-cat-desc">Ricette sempre in divenire, mai chiuse</span>
+              </a>
+              <a href="https://sites.google.com/view/cartadaforno/ricette-dautore/giallo" target="_blank" rel="noopener" class="cdf-categoria">
+                <span class="cdf-cat-nome">Giallo</span>
+                <span class="cdf-cat-desc">Il colpo di scena è nell'ultimo ingrediente</span>
+              </a>
+              <a href="https://sites.google.com/view/cartadaforno/ricette-dautore/poesia" target="_blank" rel="noopener" class="cdf-categoria">
+                <span class="cdf-cat-nome">Poesia</span>
+                <span class="cdf-cat-desc">Cibo e parole che si intrecciano, rime da assaggiare</span>
+              </a>
+            </div>
+            <a href="https://sites.google.com/view/cartadaforno/homepage" target="_blank" rel="noopener" class="btn-cdf">Visita Carta da Forno →</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div><!-- fine area-chi-sono -->
+
+
+  <!-- =============================================
+       AREA "COSA POSSO FARE"
+       Nascosta di default
+       ============================================= -->
+  <div id="area-cosa-posso-fare" class="area-contenuto" style="display:none">
+
+    <!-- SERVIZI — sfondo crema -->
+    <section id="servizi">
+      <div class="contenitore">
+
+        <span class="etichetta-sezione">Servizi</span>
+        <h2 class="titolo-sezione fade-in">Scrivo, progetto,<br><em>costruisco</em></h2>
+        <p class="testo-intro fade-in">Lavoro in modo trasversale, combinando le competenze secondo il progetto. Posso operare in autonomia o come parte di un team più ampio, grazie a una rete di collaboratori fidati.</p>
+
+        <div class="servizi-grid">
+          <div class="servizio-item fade-in">
+            <span class="servizio-num">01</span>
+            <div>
+              <h3 class="servizio-titolo">Scrittura e storytelling</h3>
+              <p class="servizio-desc">Articoli, testi editoriali, brand storytelling, copywriting narrativo. Contenuti che hanno profondità e non si limitano alla promozione.</p>
+            </div>
+          </div>
+          <div class="servizio-item fade-in" style="transition-delay: 0.1s;">
+            <span class="servizio-num">02</span>
+            <div>
+              <h3 class="servizio-titolo">Eventi culturali</h3>
+              <p class="servizio-desc">Ideazione, progettazione e coordinamento di eventi che usano il cibo come punto di partenza per creare spazi di incontro e cultura.</p>
+            </div>
+          </div>
+          <div class="servizio-item fade-in">
+            <span class="servizio-num">03</span>
+            <div>
+              <h3 class="servizio-titolo">Editing e cura editoriale</h3>
+              <p class="servizio-desc">Revisione e sviluppo di testi, dalla struttura alla forma. Collaborazione all'ideazione di pubblicazioni, riviste, rubriche.</p>
+            </div>
+          </div>
+          <div class="servizio-item fade-in" style="transition-delay: 0.1s;">
+            <span class="servizio-num">04</span>
+            <div>
+              <h3 class="servizio-titolo">Fotografia narrativa</h3>
+              <p class="servizio-desc">Immagini pensate come racconto. Reportage di eventi, documentazione di realtà agroalimentari, fotografia come strumento editoriale.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="collaboratori-nota fade-in">
+          <img src="img/uccellino_tozzo.png" alt="" class="uccellino-nota" aria-hidden="true">
+          <p><strong>Rete di collaboratori —</strong> Per progetti che richiedono competenze aggiuntive (grafica, illustrazione, marketing digitale, web), mi avvalgo di una rete di professionisti selezionati. Un pacchetto completo, con un unico interlocutore.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCENARI CTA — sfondo crema-scura -->
+    <section id="scenari">
+      <div class="contenitore">
+
+        <span class="etichetta-sezione">Cosa faccio per te</span>
+        <h2 class="titolo-sezione fade-in">La tua realtà merita<br><em>più di un post sui social</em></h2>
+        <p class="testo-intro fade-in">Se stai cercando qualcuno che sappia andare oltre la promozione e costruire qualcosa di concreto, emotivo, duraturo — sei nel posto giusto.</p>
+
+        <div class="scenari-grid">
+
+          <div class="scenario-card fade-in">
+            <div class="scenario-icona">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="24" y1="44" x2="24" y2="10"/>
+                <line x1="24" y1="10" x2="18" y2="4"/>
+                <ellipse cx="18" cy="16" rx="5" ry="3" transform="rotate(-30 18 16)"/>
+                <ellipse cx="20" cy="22" rx="5" ry="3" transform="rotate(-20 20 22)"/>
+                <ellipse cx="22" cy="28" rx="5" ry="3" transform="rotate(-10 22 28)"/>
+                <ellipse cx="30" cy="16" rx="5" ry="3" transform="rotate(30 30 16)"/>
+                <ellipse cx="28" cy="22" rx="5" ry="3" transform="rotate(20 28 22)"/>
+                <ellipse cx="26" cy="28" rx="5" ry="3" transform="rotate(10 26 28)"/>
+              </svg>
+            </div>
+            <p class="scenario-domanda">"Ho un'azienda agricola con una storia bellissima, ma non so come raccontarla."</p>
+            <p class="scenario-desc">Ogni realtà agroalimentare ha radici, persone, scelte che vale la pena raccontare. Costruiamo insieme una narrazione autentica che parla a chi ti sta davanti.</p>
+            <a href="#contatti" class="scenario-link">Parliamone →</a>
+          </div>
+
+          <div class="scenario-card fade-in" style="transition-delay: 0.1s;">
+            <div class="scenario-icona">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 28 Q8 18 24 16 Q40 18 40 28 L38 40 H10 Z"/>
+                <path d="M14 40 L14 28"/><path d="M24 40 L24 26"/>
+                <path d="M34 40 L34 28"/>
+                <path d="M10 34 Q17 30 24 32 Q31 34 38 30"/>
+                <path d="M16 22 Q20 19 24 20 Q28 19 32 22"/>
+              </svg>
+            </div>
+            <p class="scenario-domanda">"Ho un forno, una bottega, un locale. Voglio che diventi un luogo di cultura."</p>
+            <p class="scenario-desc">Organizzo eventi che usano il cibo per attivare tematiche culturali — presentazioni di libri, proiezioni, letture, rassegne. Il tuo spazio diventa una piazza.</p>
+            <a href="#contatti" class="scenario-link">Parliamone →</a>
+          </div>
+
+          <div class="scenario-card fade-in" style="transition-delay: 0.2s;">
+            <div class="scenario-icona">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 36 L8 40 L14 38 Z"/>
+                <path d="M12 36 L32 16 L36 12 Q40 8 38 14 L36 16 L16 36 Z"/>
+                <path d="M28 20 L32 24"/>
+                <path d="M16 36 L32 24"/>
+                <line x1="16" y1="42" x2="38" y2="42"/>
+                <line x1="22" y1="42" x2="22" y2="39"/>
+                <line x1="30" y1="42" x2="30" y2="39"/>
+              </svg>
+            </div>
+            <p class="scenario-domanda">"Produco vino, olio, formaggi. Voglio testi e contenuti che abbiano spessore."</p>
+            <p class="scenario-desc">Scrivo articoli, testi per cataloghi, riviste, siti — con la cura editoriale di chi conosce il mondo agroalimentare dall'interno e sa dargli la voce giusta.</p>
+            <a href="#contatti" class="scenario-link">Parliamone →</a>
+          </div>
+
+          <div class="scenario-card fade-in">
+            <div class="scenario-icona">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="16" width="36" height="26" rx="3"/>
+                <path d="M16 16 L18 10 H30 L32 16"/>
+                <circle cx="24" cy="29" r="7"/>
+                <circle cx="24" cy="29" r="4"/>
+                <circle cx="36" cy="22" r="2"/>
+                <line x1="10" y1="22" x2="14" y2="22"/>
+              </svg>
+            </div>
+            <p class="scenario-domanda">"Ho bisogno di immagini che raccontino, non solo che mostrino."</p>
+            <p class="scenario-desc">La fotografia come strumento narrativo: non foto di prodotto fine a sé stesse, ma immagini che portano con sé un punto di vista, un'emozione, un contesto.</p>
+            <a href="#contatti" class="scenario-link">Parliamone →</a>
+          </div>
+
+          <div class="scenario-card fade-in" style="transition-delay: 0.1s;">
+            <div class="scenario-icona">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="24" cy="30" rx="16" ry="6"/>
+                <circle cx="12" cy="18" r="4"/>
+                <line x1="12" y1="22" x2="12" y2="28"/>
+                <circle cx="24" cy="15" r="4"/>
+                <line x1="24" y1="19" x2="24" y2="26"/>
+                <circle cx="36" cy="18" r="4"/>
+                <line x1="36" y1="22" x2="36" y2="28"/>
+                <path d="M8 38 Q16 34 24 36 Q32 34 40 38"/>
+              </svg>
+            </div>
+            <p class="scenario-domanda">"Organizzo un festival, un evento, una rassegna nel mondo del cibo."</p>
+            <p class="scenario-desc">Collaboro alla progettazione e gestione di eventi culturali legati al mondo agroalimentare, portando competenze editoriali, curatoriali e di coordinamento.</p>
+            <a href="#contatti" class="scenario-link">Parliamone →</a>
+          </div>
+
+          <div class="scenario-card fade-in" style="transition-delay: 0.2s;">
+            <div class="scenario-icona">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="24" y1="42" x2="24" y2="20"/>
+                <path d="M24 30 Q18 24 12 26 Q14 20 20 20 Q24 20 24 24"/>
+                <path d="M24 26 Q28 18 36 18 Q36 26 30 28 Q27 29 24 26"/>
+                <ellipse cx="24" cy="38" rx="6" ry="3"/>
+              </svg>
+            </div>
+            <p class="scenario-domanda">"La mia idea è ancora vaga, ma sento che c'è qualcosa da costruire."</p>
+            <p class="scenario-desc">Anche solo per scambiare idee. Lavoro meglio quando il progetto nasce da una conversazione vera. Scrivimi, parliamo.</p>
+            <a href="#contatti" class="scenario-link">Scriviamo →</a>
+          </div>
+
+        </div>
+
+        <div class="uccellino-fondo-sezione">
+          <img src="img/uccellino_cammina.png" alt="" aria-hidden="true">
+        </div>
+
+      </div>
+    </section>
+
+    <!-- EVENTI — sfondo verde scuro -->
+    <section id="eventi">
+      <div class="contenitore">
+
+        <span class="etichetta-sezione">Un evento è già pronto per te</span>
+        <h2 class="titolo-sezione fade-in">Porto io la cultura,<br><em>tu apri le porte.</em></h2>
+        <p class="testo-intro fade-in">Hai uno spazio, una cantina, un forno, un mercato. Hai voglia di fare qualcosa di diverso ma non sai da dove cominciare. Ci penso io: ho già idee pronte, una rete di artisti, scrittori, musicisti e cinematografi con cui lavoro. Tu mi dai i dati, io ti porto le proposte. Senza impegno.</p>
+
+        <div class="eventi-tipi fade-in">
+          <div class="evento-tipo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M24 10 L24 40"/>
+              <path d="M24 12 Q16 10 8 12 L8 40 Q16 38 24 40"/>
+              <path d="M24 12 Q32 10 40 12 L40 40 Q32 38 24 40"/>
+              <line x1="8" y1="20" x2="22" y2="20"/>
+              <line x1="8" y1="26" x2="22" y2="26"/>
+              <line x1="8" y1="32" x2="22" y2="32"/>
+              <line x1="26" y1="20" x2="40" y2="20"/>
+              <line x1="26" y1="26" x2="40" y2="26"/>
+            </svg>
+            <span>Lettura</span>
+          </div>
+          <div class="evento-tipo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="16" cy="20" rx="8" ry="9"/>
+              <ellipse cx="32" cy="20" rx="8" ry="9"/>
+              <path d="M12 22 Q16 27 20 22"/>
+              <path d="M28 19 Q32 15 36 19"/>
+              <line x1="22" y1="20" x2="26" y2="20"/>
+              <line x1="16" y1="29" x2="16" y2="36"/>
+              <line x1="32" y1="29" x2="32" y2="36"/>
+              <path d="M12 36 L20 36"/><path d="M28 36 L36 36"/>
+            </svg>
+            <span>Teatro</span>
+          </div>
+          <div class="evento-tipo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="12" width="36" height="24" rx="2"/>
+              <line x1="6" y1="18" x2="42" y2="18"/>
+              <line x1="6" y1="30" x2="42" y2="30"/>
+              <line x1="12" y1="12" x2="12" y2="18"/>
+              <line x1="20" y1="12" x2="20" y2="18"/>
+              <line x1="28" y1="12" x2="28" y2="18"/>
+              <line x1="36" y1="12" x2="36" y2="18"/>
+              <line x1="12" y1="30" x2="12" y2="36"/>
+              <line x1="20" y1="30" x2="20" y2="36"/>
+              <line x1="28" y1="30" x2="28" y2="36"/>
+              <line x1="36" y1="30" x2="36" y2="36"/>
+              <path d="M20 22 L28 24 L20 26 Z"/>
+            </svg>
+            <span>Cinema</span>
+          </div>
+          <div class="evento-tipo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 34 L18 16 L38 12 L38 30"/>
+              <circle cx="14" cy="36" r="4"/>
+              <circle cx="34" cy="32" r="4"/>
+              <line x1="18" y1="22" x2="38" y2="18"/>
+            </svg>
+            <span>Musica</span>
+          </div>
+          <div class="evento-tipo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M30 8 L38 16 L18 36 L10 38 L12 30 Z"/>
+              <line x1="26" y1="12" x2="34" y2="20"/>
+              <path d="M10 38 Q8 42 12 44 Q16 44 14 40"/>
+            </svg>
+            <span>Arte visiva</span>
+          </div>
+          <div class="evento-tipo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 28 Q10 18 24 16 Q38 18 38 28 L36 38 H12 Z"/>
+              <path d="M18 16 Q20 8 28 10 Q32 14 26 16"/>
+              <path d="M16 32 Q20 29 24 31 Q28 33 32 30"/>
+            </svg>
+            <span>Cibo e cultura</span>
+          </div>
+        </div>
+
+        <div class="eventi-passi fade-in">
+          <div class="evento-passo">
+            <span class="passo-num">01</span>
+            <h3 class="passo-titolo">Mi racconti la tua realtà</h3>
+            <p class="passo-desc">Data, spazio, budget e tipo di evento che immagini. O anche solo il nome della tua attività se non hai ancora un'idea precisa.</p>
+          </div>
+          <div class="evento-passo">
+            <span class="passo-num">02</span>
+            <h3 class="passo-titolo">Ti preparo le proposte</h3>
+            <p class="passo-desc">Ricevi proposte concrete, studiate per la tua realtà. Non pacchetti generici — eventi pensati per chi sei e per il tuo pubblico.</p>
+          </div>
+          <div class="evento-passo">
+            <span class="passo-num">03</span>
+            <h3 class="passo-titolo">Tu decidi, senza fretta</h3>
+            <p class="passo-desc">Accetti quello che ti convince, lasci perdere quello che non fa per te. Nessun impegno fino a quando non sei sicuro.</p>
+          </div>
+        </div>
+
+        <div class="eventi-cta fade-in">
+          <div class="evento-cta-card">
+            <h3>Ho già un'idea</h3>
+            <p>Dimmi data, budget e tipo di evento. Ti rispondo con proposte su misura.</p>
+            <button class="btn-evento" onclick="apriPopup('popup-misura')">Voglio un evento su misura →</button>
+          </div>
+          <div class="eventi-cta-sep">oppure</div>
+          <div class="evento-cta-card">
+            <h3>Non so ancora cosa voglio</h3>
+            <p>Lasciami il tuo contatto. Mi informo sulla tua realtà e ti scrivo io con qualcosa di pensato per te.</p>
+            <button class="btn-evento" onclick="apriPopup('popup-sorpresa')">Sorprendimi →</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- fine area-cosa-posso-fare -->
+
+  <!-- =============================================
+       CONTATTI — sempre visibile, fuori dalle aree
+       Appare sempre in fondo alla pagina prima del footer
+       ============================================= -->
+  <section id="contatti">
+    <div class="contenitore">
+      <div class="contatti-inner">
+        <span class="etichetta-sezione">Contatti</span>
+        <h2 class="titolo-sezione fade-in">Hai una storia<br><em>da raccontare?</em></h2>
+        <p class="testo-intro fade-in">Scrivimi anche solo per scambiare idee. Il lavoro migliore nasce sempre da una conversazione. Sono a Cesena, ma lavoro ovunque ci sia una buona storia da costruire.</p>
+        <div class="contatti-form-wrap fade-in">
+          <form class="contatti-form" action="php/contatto.php" method="POST">
+            <div class="form-riga">
+              <div class="form-gruppo">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Il tuo nome" required>
+              </div>
+              <div class="form-gruppo">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="La tua email" required>
+              </div>
+            </div>
+            <div class="form-gruppo">
+              <label for="oggetto">Di cosa vorresti parlare?</label>
+              <input type="text" id="oggetto" name="oggetto" placeholder="Es. racconto la storia del mio forno, organizzo un evento...">
+            </div>
+            <div class="form-gruppo">
+              <label for="messaggio">Messaggio</label>
+              <textarea id="messaggio" name="messaggio" rows="5" placeholder="Raccontami il tuo progetto, la tua idea, anche se è ancora vaga." required></textarea>
+            </div>
+            <button type="submit" class="btn-primario btn-form">Invia il messaggio →</button>
+          </form>
+        </div>
+        <div class="divisore">
+          <div class="divisore-linea"></div>
+          <img src="img/uccellino_becca_terra.png" alt="" class="divisore-uccellino" aria-hidden="true">
+          <div class="divisore-linea"></div>
+        </div>
+        <div class="contatti-dettagli fade-in">
+          <div class="contatti-dettagli-grid">
+            <a href="mailto:federicamuccioli93@gmail.com" class="contatto-item">
+              <span class="contatto-label">Mail</span>
+              <span class="contatto-valore">federicamuccioli93@gmail.com</span>
+            </a>
+            <a href="tel:+393404158768" class="contatto-item">
+              <span class="contatto-label">Telefono</span>
+              <span class="contatto-valore">340 415 8768</span>
+            </a>
+            <a href="#" target="_blank" rel="noopener" class="contatto-item">
+              <span class="contatto-label">Instagram</span>
+              <span class="contatto-valore">@federicamuccioli</span>
+            </a>
+          </div>
+          <p class="contatti-location">Cesena, Emilia-Romagna · Disponibile per collaborazioni in tutta Italia</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Federica Muccioli · Fatto con <span class="footer-cuore">♥</span> e tante storie</p>
+  </footer>
+
+  <!-- WHATSAPP -->
+  <a href="https://wa.me/393404158768" target="_blank" rel="noopener" class="whatsapp-btn" aria-label="Scrivimi su WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- POPUP — Su misura -->
+  <div class="popup-overlay" id="popup-misura">
+    <div class="popup">
+      <button class="popup-chiudi" onclick="chiudiPopup('popup-misura')" aria-label="Chiudi">✕</button>
+      <h3 class="popup-titolo">Voglio un evento su misura</h3>
+      <p class="popup-intro">Raccontami la tua realtà e quello che hai in mente. Ti rispondo con proposte concrete.</p>
+      <form class="popup-form" onsubmit="inviaForm(event, 'misura')">
+        <div class="form-riga">
+          <div class="form-gruppo">
+            <label for="m-nome">Nome e attività</label>
+            <input type="text" id="m-nome" name="nome" placeholder="Es. Marco — Cantina Rossi" required>
+          </div>
+          <div class="form-gruppo">
+            <label for="m-contatto">Email o telefono</label>
+            <input type="text" id="m-contatto" name="contatto" placeholder="Come ti contatto" required>
+          </div>
+        </div>
+        <div class="form-riga">
+          <div class="form-gruppo">
+            <label for="m-data">Data o periodo</label>
+            <input type="text" id="m-data" name="data" placeholder="Es. giugno 2025, estate...">
+          </div>
+          <div class="form-gruppo">
+            <label for="m-budget">Budget indicativo</label>
+            <select id="m-budget" name="budget">
+              <option value="">Seleziona una fascia</option>
+              <option value="sotto300">Sotto i 300€</option>
+              <option value="300-600">300€ – 600€</option>
+              <option value="oltre600">Oltre i 600€</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-gruppo">
+          <label for="m-tipo">Tipo di evento preferito</label>
+          <input type="text" id="m-tipo" name="tipo" placeholder="Es. lettura, musica, cinema, teatro... o non lo so ancora">
+        </div>
+        <div class="form-gruppo">
+          <label for="m-dettagli">Raccontami la tua realtà e altri dettagli</label>
+          <textarea id="m-dettagli" name="dettagli" rows="4" placeholder="Tipo di attività, quante persone, lo spazio, l'obiettivo dell'evento..."></textarea>
+        </div>
+        <button type="submit" class="btn-primario btn-form">Invia la richiesta →</button>
+      </form>
+      <div class="popup-successo" id="successo-misura" style="display:none;">
+        <p>✦ Grazie! Ho ricevuto la tua richiesta. Ti contatto presto con qualche proposta.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP — Sorprendimi -->
+  <div class="popup-overlay" id="popup-sorpresa">
+    <div class="popup">
+      <button class="popup-chiudi" onclick="chiudiPopup('popup-sorpresa')" aria-label="Chiudi">✕</button>
+      <h3 class="popup-titolo">Sorprendimi</h3>
+      <p class="popup-intro">Non serve sapere cosa vuoi. Mi informo sulla tua realtà e ti scrivo io con qualcosa di pensato per te.</p>
+      <form class="popup-form" onsubmit="inviaForm(event, 'sorpresa')">
+        <div class="form-riga">
+          <div class="form-gruppo">
+            <label for="s-nome">Nome e attività</label>
+            <input type="text" id="s-nome" name="nome" placeholder="Es. Laura — Forno del borgo" required>
+          </div>
+          <div class="form-gruppo">
+            <label for="s-contatto">Email o telefono</label>
+            <input type="text" id="s-contatto" name="contatto" placeholder="Come ti contatto" required>
+          </div>
+        </div>
+        <div class="form-gruppo">
+          <label for="s-realta">Raccontami la tua realtà</label>
+          <textarea id="s-realta" name="realta" rows="4" placeholder="Cosa fai, dove sei, chi è il tuo pubblico. Anche due righe vanno benissimo." required></textarea>
+        </div>
+        <button type="submit" class="btn-primario btn-form">Mandami le proposte →</button>
+      </form>
+      <div class="popup-successo" id="successo-sorpresa" style="display:none;">
+        <p>✦ Perfetto! Mi metto subito al lavoro. Ti scrivo presto con qualche idea.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+
+</body>
+</html>
