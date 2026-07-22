@@ -79,7 +79,7 @@
     <select id="assumere"><option value="no">No</option><option value="si">Sì</option></select>
   </div>
   <div class="campo"><label>Se sì: ore/settimana coperte dal part-time</label><input type="number" step="0.5" id="ore_parttime" value="0"></div>
-  <div class="campo"><label>Soglia di ore/settimana considerata sostenibile per una persona sola <span class="nuovo">★ aggiunto</span></label><input type="number" step="0.5" id="soglia_ore" value="45"></div>
+  <div class="campo"><label>Soglia di ore/settimana considerata sostenibile per una persona sola</label><input type="number" step="0.5" id="soglia_ore" value="45"></div>
 </fieldset>
 
 <h2>💶 Step 2 — Costi di avviamento</h2>
@@ -96,7 +96,13 @@
   <div class="campo"><label>Costo polizza fideiussoria per anticipo bando (€, 0 se non richiesta)</label><input type="number" id="costo_polizza" value="0"></div>
   <div class="campo"><label>% delle spese di avviamento ammissibili dal bando</label><input type="number" id="perc_ammissibile_bando" value="80"></div>
   <div class="campo"><label>% imprevisti da aggiungere</label><input type="number" id="perc_imprevisti" value="10"></div>
-  <div class="campo"><label>Liquidità propria disponibile oggi (€) <span class="nuovo">★ aggiunto</span></label><input type="number" id="liquidita_disponibile" value="6000"></div>
+  <div class="campo"><label>Liquidità propria disponibile oggi (€)</label><input type="number" id="liquidita_disponibile" value="6000"></div>
+  <div class="campo"><label>Tasso di interesse annuo del prestito/microcredito per coprire l'eventuale gap (%)</label><input type="number" step="0.1" id="tasso_prestito" value="6.5"></div>
+  <div class="campo"><label>Durata del prestito (anni)</label><input type="number" id="durata_prestito" value="7"></div>
+  <div class="campo"><label>Vita utile stimata di lavori/insegna/software, per l'ammortamento (anni)</label><input type="number" id="vita_utile_anni" value="5"></div>
+  <div class="campo"><label>Includere l'ammortamento nel calcolo di sostenibilità (test più prudente)?</label>
+    <select id="includi_ammortamento"><option value="si" selected>Sì</option><option value="no">No</option></select>
+  </div>
 </fieldset>
 
 <h2>📆 Step 2 — Costi fissi mensili</h2>
@@ -106,13 +112,20 @@
   <div class="campo"><label>Assicurazione mensile (se annua, dividi per 12) (€)</label><input type="number" id="assicurazione_mensile" value="50"></div>
   <div class="campo"><label>Software gestionale in abbonamento, mensile (€)</label><input type="number" id="software_abbon" value="30"></div>
   <div class="campo"><label>Commercialista, mensile o forfait/12 (€)</label><input type="number" id="commercialista_mens" value="100"></div>
-  <div class="campo"><label>Contributi INPS mensili stimati (€)</label><input type="number" id="contributi_inps" value="300"></div>
+  <div class="campo"><label>Contributi INPS mensili stimati (€)</label><input type="number" id="contributi_inps" value="384"></div>
   <div class="campo"><label>Costo mensile part-time (stipendio + contributi), se attivato (€)</label><input type="number" id="costo_parttime_mens" value="0"></div>
+  <div class="campo"><label>TARI mensile equivalente (tassa rifiuti attività commerciale) (€)</label><input type="number" id="tari_mensile" value="21"></div>
+  <div class="campo"><label>Diritto camerale CCIAA, mensile equivalente (annuo ~120€) (€)</label><input type="number" id="diritto_camerale_mensile" value="10"></div>
+  <div class="campo"><label>Canone conto corrente business, mensile (€)</label><input type="number" id="canone_conto_mensile" value="15"></div>
+  <div class="campo"><label>Canone mensile POS/pagamenti elettronici (€)</label><input type="number" id="canone_pos_mensile" value="12"></div>
+  <div class="campo"><label>Commissione % media sui pagamenti con carta/POS</label><input type="number" step="0.1" id="commissione_pos_perc" value="1"></div>
+  <div class="campo"><label>Materiali di consumo mensili (sacchetti, scontrini, imballaggi) (€)</label><input type="number" id="materiali_consumo_mensile" value="25"></div>
+  <div class="campo"><label>Pubblicità/marketing a pagamento, mensile (0 se solo organico) (€)</label><input type="number" id="pubblicita_mensile" value="0"></div>
 </fieldset>
 
 <h2>📈 Step 3 — Ricavi</h2>
 <fieldset>
-  <div class="campo"><label>Prezzo medio di copertina di un libro (€)</label><input type="number" step="0.5" id="prezzo_medio_libro" value="18"></div>
+  <div class="campo"><label>Prezzo medio di copertina di un libro (€)</label><input type="number" step="0.5" id="prezzo_medio_libro" value="17"></div>
   <div class="campo"><label>Margine % trattenuto sul prezzo di copertina</label><input type="number" id="margine_libro_perc" value="32"></div>
   <div class="campo"><label>Persone che entrano in negozio in un giorno feriale medio</label><input type="number" id="persone_giorno" value="15"></div>
   <div class="campo"><label>% di chi entra che compra qualcosa</label><input type="number" id="perc_acquisto" value="30"></div>
@@ -125,7 +138,7 @@
   <div class="campo"><label>Vendere prodotti alimentari da subito?</label>
     <select id="vendi_prodotti"><option value="si">Sì</option><option value="no">No</option></select>
   </div>
-  <div class="campo"><label>Quanti prodotti alimentari venduti al giorno <span class="nuovo">★ aggiunto</span></label><input type="number" step="0.5" id="prodotti_al_giorno" value="3"></div>
+  <div class="campo"><label>Quanti prodotti alimentari venduti al giorno</label><input type="number" step="0.5" id="prodotti_al_giorno" value="3"></div>
   <div class="campo"><label>Scontrino medio prodotto alimentare (€)</label><input type="number" step="0.5" id="scontrino_prodotto" value="10"></div>
   <div class="campo"><label>Margine % medio sui prodotti alimentari</label><input type="number" id="margine_prodotto_perc" value="45"></div>
 
@@ -136,21 +149,21 @@
     <select id="periodicita_abbon"><option value="mensile">Mensile</option><option value="annuale">Annuale</option></select>
   </div>
   <div class="campo"><label>Prezzo abbonamento (€, secondo periodicità)</label><input type="number" step="0.5" id="prezzo_abbonamento" value="15"></div>
-  <div class="campo"><label>Numero abbonati stimato nei primi mesi <span class="nuovo">★ aggiunto</span></label><input type="number" id="numero_abbonati" value="10"></div>
+  <div class="campo"><label>Numero abbonati stimato nei primi mesi</label><input type="number" id="numero_abbonati" value="10"></div>
 
   <div class="campo"><label>Includere i workshop di scrittura come flusso separato?</label>
     <select id="attiva_workshop"><option value="si">Sì</option><option value="no">No</option></select>
   </div>
   <div class="campo"><label>Prezzo a partecipante workshop (€)</label><input type="number" step="0.5" id="prezzo_workshop" value="25"></div>
   <div class="campo"><label>Capienza media workshop (persone)</label><input type="number" id="capienza_workshop" value="10"></div>
-  <div class="campo"><label>Workshop al mese <span class="nuovo">★ aggiunto</span></label><input type="number" step="0.5" id="workshop_al_mese" value="1"></div>
+  <div class="campo"><label>Workshop al mese</label><input type="number" step="0.5" id="workshop_al_mese" value="1"></div>
 
   <div class="campo"><label>Includere un angolo oggettistica/cartoleria a tema?</label>
     <select id="attiva_oggettistica"><option value="si">Sì</option><option value="no">No</option></select>
   </div>
   <div class="campo"><label>Scontrino medio oggettistica (€)</label><input type="number" step="0.5" id="scontrino_oggetti" value="15"></div>
   <div class="campo"><label>Margine % oggettistica</label><input type="number" id="margine_oggetti_perc" value="50"></div>
-  <div class="campo"><label>Pezzi di oggettistica venduti al mese <span class="nuovo">★ aggiunto</span></label><input type="number" id="oggetti_al_mese" value="5"></div>
+  <div class="campo"><label>Pezzi di oggettistica venduti al mese</label><input type="number" id="oggetti_al_mese" value="5"></div>
 
   <div class="campo"><label>Tariffa oraria media servizi professionali esterni (€)</label><input type="number" step="0.5" id="tariffa_servizi_esterni" value="25"></div>
   <div class="campo"><label>Entrate fisse già esistenti al mese (es. Sabri) (€)</label><input type="number" id="entrate_fisse_esistenti" value="500"></div>
@@ -159,14 +172,16 @@
 <h2>🎯 Step 4 — Obiettivo</h2>
 <fieldset>
   <div class="campo"><label>Stipendio netto mensile minimo da raggiungere entro 12-18 mesi (€)</label><input type="number" id="stipendio_target" value="1200"></div>
+  <div class="campo"><label>Aliquota fiscale media stimata sul reddito (%)</label><input type="number" step="0.5" id="aliquota_fiscale" value="5"></div>
 </fieldset>
+<p class="nota" style="margin-top:-4px;">Il netto che vuoi in tasca non è la cifra da coprire: su quell'utile si pagano le tasse (imposta sostitutiva nel regime forfettario). Il 5% è l'aliquota agevolata per le nuove attività nei primi 5 anni — da confermare col commercialista; l'aliquota ordinaria forfettario è 15%.</p>
 
 <button class="btn" type="submit">Calcola →</button>
 </form>
 
 <p class="nota">
 Strumento di stima approssimata a uso interno, non sostituisce il business plan formale né una consulenza di un commercialista.<br>
-Campi con <span class="nuovo">★ aggiunto</span>: non erano nell'elenco originale di domande — servono per chiudere i calcoli su volumi che altrimenti restavano indefiniti (es. non bastava sapere il margine su un prodotto, serviva anche quanti se ne vendono).
+I valori precompilati sono stime plausibili basate su dati di mercato 2026 (AIE, INPS, CCIAA, ARERA) — vanno sempre sostituiti con i dati reali della vostra situazione.
 </p>
 
 <script>
@@ -217,6 +232,10 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const perc_ammissibile_bando = num('perc_ammissibile_bando', 100);
   const perc_imprevisti = num('perc_imprevisti', 10);
   const liquidita_disponibile = num('liquidita_disponibile');
+  const tasso_prestito = num('tasso_prestito', 6.5);
+  const durata_prestito = num('durata_prestito', 7);
+  const vita_utile_anni = num('vita_utile_anni', 5);
+  const includi_ammortamento = yn('includi_ammortamento');
 
   const costo_stock_immediato = costo_stock_iniziale * (1 - perc_conto_deposito / 100);
   const deposito_cauzionale = canone_mensile * deposito_mesi;
@@ -238,6 +257,18 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const capitale_necessario_subito = totale_avviamento - anticipo_ottenibile;
   const gap_liquidita = capitale_necessario_subito - liquidita_disponibile;
 
+  const capitale_da_finanziare = Math.max(0, gap_liquidita);
+  const i_mensile = tasso_prestito / 100 / 12;
+  const n_rate = durata_prestito * 12;
+  const rata_mutuo_mensile = (capitale_da_finanziare > 0 && i_mensile > 0)
+    ? capitale_da_finanziare * i_mensile / (1 - Math.pow(1 + i_mensile, -n_rate))
+    : 0;
+
+  const capex_ammortizzabile = costo_lavori + costo_insegna + costo_software_setup;
+  const quota_capex_coperta_bando = capex_ammortizzabile * (perc_ammissibile_bando / 100);
+  const capex_netto_ammortizzabile = capex_ammortizzabile - quota_capex_coperta_bando;
+  const ammortamento_mensile = vita_utile_anni > 0 ? capex_netto_ammortizzabile / (vita_utile_anni * 12) : 0;
+
   // ---------- STEP 2: COSTI FISSI MENSILI ----------
   const utenze_mensili = num('utenze_mensili');
   const telefono_mensile = num('telefono_mensile');
@@ -246,10 +277,19 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const commercialista_mens = num('commercialista_mens');
   const contributi_inps = num('contributi_inps');
   const costo_parttime_mens = assumere ? num('costo_parttime_mens') : 0;
+  const tari_mensile = num('tari_mensile');
+  const diritto_camerale_mensile = num('diritto_camerale_mensile');
+  const canone_conto_mensile = num('canone_conto_mensile');
+  const canone_pos_mensile = num('canone_pos_mensile');
+  const commissione_pos_perc = num('commissione_pos_perc');
+  const materiali_consumo_mensile = num('materiali_consumo_mensile');
+  const pubblicita_mensile = num('pubblicita_mensile');
 
   const cf_sola = canone_mensile + utenze_mensili + telefono_mensile + assicurazione_mensile
-                + software_abbon + commercialista_mens + contributi_inps;
-  const cf_scelto = cf_sola + costo_parttime_mens;
+                + software_abbon + commercialista_mens + contributi_inps
+                + tari_mensile + diritto_camerale_mensile + canone_conto_mensile
+                + canone_pos_mensile + materiali_consumo_mensile + pubblicita_mensile;
+  let cf_scelto = cf_sola + costo_parttime_mens;
 
   // ---------- STEP 3: RICAVI ----------
   const prezzo_medio_libro = num('prezzo_medio_libro');
@@ -286,6 +326,8 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const entrate_fisse_esistenti = num('entrate_fisse_esistenti');
 
   const stipendio_target = num('stipendio_target');
+  const aliquota_fiscale = num('aliquota_fiscale', 5);
+  const stipendio_lordo_necessario = stipendio_target / (1 - aliquota_fiscale / 100);
 
   const giorni_apertura_mese = giorni_apertura * WEEKS;
   const margine_unitario_libro = prezzo_medio_libro * (margine_libro_perc / 100);
@@ -317,12 +359,26 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
 
   const ricavo_servizi_mese = tariffa_servizi_esterni * ore_servizi_esterni * WEEKS;
 
+  // ---------- QUANTITA' STIMATE (numeri, non solo euro) ----------
+  const libri_giorno_stimati = persone_giorno * (perc_acquisto / 100);
+  const libri_mese_stimati = libri_giorno_stimati * giorni_apertura_mese;
+  const partecipanti_eventi_mese = eventi_mese * capienza_evento;
+  const prodotti_mese_stimati = prodotti_al_giorno * giorni_apertura_mese;
+  const partecipanti_workshop_mese = workshop_al_mese * capienza_workshop;
+  const ore_servizi_mese_stimate = ore_servizi_esterni * WEEKS;
+
   const ricavo_totale_stimato = ricavo_libri_mese + ricavo_eventi_mese + ricavo_prodotti_mese
                               + ricavo_abbonamenti_mese + ricavo_workshop_mese + ricavo_oggetti_mese
                               + ricavo_servizi_mese + entrate_fisse_esistenti;
 
+  // Commissioni POS: applicate sugli incassi "in negozio" (esclusi servizi esterni ed entrate già fisse)
+  const base_incassi_pos = ricavo_libri_mese + ricavo_eventi_mese + ricavo_prodotti_mese
+                          + ricavo_abbonamenti_mese + ricavo_workshop_mese + ricavo_oggetti_mese;
+  const commissione_pos_mensile = base_incassi_pos * (commissione_pos_perc / 100);
+  cf_scelto = cf_scelto + commissione_pos_mensile + rata_mutuo_mensile;
+
   // ---------- STEP 4: VERIFICA ----------
-  const fabbisogno_mensile = cf_scelto + stipendio_target;
+  const fabbisogno_mensile = cf_scelto + stipendio_lordo_necessario + (includi_ammortamento ? ammortamento_mensile : 0);
   const differenza = ricavo_totale_stimato - fabbisogno_mensile;
   const piano_regge = differenza >= 0;
   const gap_mensile = Math.max(0, -differenza);
@@ -346,19 +402,21 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
     : `⚠️ Manca ${euro2(gap_mensile)} al mese per raggiungere l'obiettivo`;
   html += '</div>';
 
-  html += '<table><tr><th>Voce</th><th class="num">Mensile</th></tr>';
-  html += `<tr><td>Ricavo libri (da traffico stimato)</td><td class="num">${euro2(ricavo_libri_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo eventi (netto)</td><td class="num">${euro2(ricavo_eventi_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo prodotti alimentari</td><td class="num">${euro2(ricavo_prodotti_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo abbonamenti book club</td><td class="num">${euro2(ricavo_abbonamenti_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo workshop</td><td class="num">${euro2(ricavo_workshop_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo oggettistica</td><td class="num">${euro2(ricavo_oggetti_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo servizi professionali esterni</td><td class="num">${euro2(ricavo_servizi_mese)}</td></tr>`;
-  html += `<tr><td>Entrate fisse già esistenti</td><td class="num">${euro2(entrate_fisse_esistenti)}</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>TOTALE RICAVI STIMATI</td><td class="num">${euro2(ricavo_totale_stimato)}</td></tr>`;
-  html += `<tr><td>Costi fissi mensili (scenario scelto)</td><td class="num">${euro2(cf_scelto)}</td></tr>`;
-  html += `<tr><td>Stipendio netto target</td><td class="num">${euro2(stipendio_target)}</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>FABBISOGNO MENSILE TOTALE</td><td class="num">${euro2(fabbisogno_mensile)}</td></tr>`;
+  html += '<table><tr><th>Voce</th><th class="num">Quantità</th><th class="num">Mensile</th></tr>';
+  html += `<tr><td>Ricavo libri (da traffico stimato)</td><td class="num">${n1(libri_giorno_stimati)} libri/giorno (~${n1(libri_mese_stimati)}/mese)</td><td class="num">${euro2(ricavo_libri_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo eventi (netto)</td><td class="num">${n1(eventi_mese)} eventi/mese, ${n1(partecipanti_eventi_mese)} partecipanti</td><td class="num">${euro2(ricavo_eventi_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo prodotti alimentari</td><td class="num">${n1(prodotti_al_giorno)}/giorno (~${n1(prodotti_mese_stimati)}/mese)</td><td class="num">${euro2(ricavo_prodotti_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo abbonamenti book club</td><td class="num">${n1(numero_abbonati)} abbonati</td><td class="num">${euro2(ricavo_abbonamenti_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo workshop</td><td class="num">${n1(workshop_al_mese)}/mese, ${n1(partecipanti_workshop_mese)} partecipanti</td><td class="num">${euro2(ricavo_workshop_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo oggettistica</td><td class="num">${n1(oggetti_al_mese)} pezzi/mese</td><td class="num">${euro2(ricavo_oggetti_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo servizi professionali esterni</td><td class="num">${n1(ore_servizi_mese_stimate)} ore/mese</td><td class="num">${euro2(ricavo_servizi_mese)}</td></tr>`;
+  html += `<tr><td>Entrate fisse già esistenti</td><td class="num">—</td><td class="num">${euro2(entrate_fisse_esistenti)}</td></tr>`;
+  html += `<tr class="sezione-titolo"><td>TOTALE RICAVI STIMATI</td><td class="num"></td><td class="num">${euro2(ricavo_totale_stimato)}</td></tr>`;
+  html += `<tr><td>Costi fissi mensili (scenario scelto, incl. commissioni POS ${euro2(commissione_pos_mensile)} e rata prestito ${euro2(rata_mutuo_mensile)})</td><td class="num"></td><td class="num">${euro2(cf_scelto)}</td></tr>`;
+  html += `<tr><td>Stipendio netto target</td><td class="num"></td><td class="num">${euro2(stipendio_target)}</td></tr>`;
+  html += `<tr><td>&nbsp;&nbsp;di cui necessario LORDO (ante imposte, aliquota ${n1(aliquota_fiscale)}%)</td><td class="num"></td><td class="num">${euro2(stipendio_lordo_necessario)}</td></tr>`;
+  html += `<tr><td>Ammortamento investimento (${n1(vita_utile_anni)} anni)${includi_ammortamento ? '' : ' — non incluso nel totale sotto'}</td><td class="num"></td><td class="num">${euro2(ammortamento_mensile)}</td></tr>`;
+  html += `<tr class="sezione-titolo"><td>FABBISOGNO MENSILE TOTALE</td><td class="num"></td><td class="num">${euro2(fabbisogno_mensile)}</td></tr>`;
   html += '</table>';
 
   if (!piano_regge) {
@@ -389,6 +447,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   html += `<tr class="sezione-titolo"><td>Capitale che serve avere SUBITO</td><td class="num">${euro(capitale_necessario_subito)}</td></tr>`;
   html += `<tr><td>Liquidità propria disponibile</td><td class="num">${euro(liquidita_disponibile)}</td></tr>`;
   html += `<tr class="sezione-titolo"><td>${gap_liquidita > 0 ? 'MANCANO (da prestito/mutuo)' : 'AVANZO rispetto al necessario'}</td><td class="num">${euro(Math.abs(gap_liquidita))}</td></tr>`;
+  html += `<tr><td>Rata mensile stimata del prestito (${n1(tasso_prestito)}%, ${n1(durata_prestito)} anni)</td><td class="num">${euro2(rata_mutuo_mensile)}</td></tr>`;
   html += '</table>';
   html += '<p class="nota">Nota: il bando MiC rimborsa a saldo (in gran parte), non anticipa. Il "capitale necessario subito" è quindi la cifra reale da reperire prima di aprire, anche come prestito/microcredito, indipendentemente dal contributo che arriverà dopo.</p>';
 
