@@ -26,9 +26,15 @@
     padding:16px; margin:0 0 4px 0; background:#fff;
   }
   legend{display:none;}
-  .campo{margin-bottom:12px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+  .step-intro{
+    font-size:0.9rem; color:#555; margin:0 0 14px; padding-bottom:12px;
+    border-bottom:1px dashed var(--bordo); font-style:italic;
+  }
+  .campo{margin-bottom:16px;}
+  .campo-riga{display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
   label{flex:1 1 380px; font-size:0.94rem;}
-  .nuovo{color:var(--rosso); font-weight:bold; font-size:0.8rem;}
+  .help{flex-basis:100%; font-size:0.82rem; color:#666; margin-top:3px; line-height:1.45;}
+  .nuovo-tag{display:inline-block; color:var(--rosso); font-weight:bold; font-size:0.72rem; border:1px solid var(--rosso); border-radius:4px; padding:0 5px; margin-right:6px; vertical-align:middle;}
   input[type=number], select{
     padding:7px 9px; border:1px solid #BBB; border-radius:5px; font-size:0.95rem;
     width:150px;
@@ -48,19 +54,23 @@
   }
   .verdetto.ok{background:#E5F0E6; color:#3A5C3D;}
   .verdetto.no{background:#F3E3E7; color:#7A3040;}
-  table{width:100%; border-collapse:collapse; margin:10px 0 20px;}
+  table{width:100%; border-collapse:collapse; margin:10px 0 20px; display:block; overflow-x:auto;}
   td, th{padding:6px 8px; border-bottom:1px solid var(--bordo); font-size:0.93rem; text-align:left;}
   th{background:#F2EEE6;}
-  .num{text-align:right; font-variant-numeric:tabular-nums;}
+  .num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
   .nota{font-size:0.85rem; color:#666; margin-top:20px; border-top:1px dashed var(--bordo); padding-top:12px;}
   .sezione-titolo{font-weight:bold; background:#F2EEE6;}
-  h3.sub{background:none;color:inherit;padding:0;margin-top:0;font-size:1.05rem;}
+  h3.sub{background:none;color:inherit;padding:0;margin-top:28px;font-size:1.05rem;border-top:1px solid var(--bordo);padding-top:18px;}
+  h3.sub:first-of-type{border-top:none;margin-top:0;padding-top:0;}
+  .cassa-ok{color:#3A5C3D; font-weight:600;}
+  .cassa-no{color:#7A3040; font-weight:600;}
+  .riga-sub{color:#666;font-size:0.9rem;}
 </style>
 </head>
 <body>
 
 <h1>📚 Studio di Fattibilità — Libreria Carta da Forno</h1>
-<p>Inserisci i dati che avete raccolto e premi <strong>Calcola</strong>: i risultati compaiono qui sopra, senza bisogno di alcun server (tutto il calcolo avviene nel browser).</p>
+<p>Compila i campi con i vostri dati (sotto ogni campo trovate una spiegazione di cosa inserire e, dove c'è un valore già scritto, perché è stato scelto quel numero). Poi premete <strong>Calcola</strong>: i risultati compaiono qui sopra, senza bisogno di alcun server — tutto avviene nel browser, nessun dato viene salvato o inviato altrove.</p>
 
 <div id="risultati"></div>
 
@@ -68,120 +78,391 @@
 
 <h2>⏱️ Step 1 — Tempo</h2>
 <fieldset>
-  <div class="campo"><label>Giorni di apertura al pubblico a settimana</label><input type="number" step="0.5" id="giorni_apertura" value="6"></div>
-  <div class="campo"><label>Ore di apertura al giorno</label><input type="number" step="0.5" id="ore_apertura_giorno" value="8"></div>
-  <div class="campo"><label>Ore/settimana per "dietro le quinte" (ordini, resi, social, magazzino)</label><input type="number" step="0.5" id="ore_retrobottega" value="6"></div>
-  <div class="campo"><label>Eventi al mese (libreria + Forno Demetra)</label><input type="number" step="0.5" id="eventi_mese" value="2"></div>
-  <div class="campo"><label>Ore per evento (organizzazione + svolgimento)</label><input type="number" step="0.5" id="ore_per_evento" value="6"></div>
-  <div class="campo"><label>Ore/settimana per servizi esterni (storytelling, eventi per altri)</label><input type="number" step="0.5" id="ore_servizi_esterni" value="10"></div>
+  <p class="step-intro">Quanto tempo, in ore a settimana, richiede davvero gestire l'attività — per capire se è sostenibile per una persona sola o serve un aiuto part-time.</p>
+
   <div class="campo">
-    <label>Assumere una persona part-time?</label>
-    <select id="assumere"><option value="no">No</option><option value="si">Sì</option></select>
+    <div class="campo-riga"><label>Giorni di apertura al pubblico a settimana</label><input type="number" step="0.5" id="giorni_apertura" value="6"></div>
+    <div class="help">Quanti giorni a settimana il negozio è aperto al pubblico (eventi esclusi). Default 6: chiuso solo la domenica, tipico per un'attività di paese.</div>
   </div>
-  <div class="campo"><label>Se sì: ore/settimana coperte dal part-time</label><input type="number" step="0.5" id="ore_parttime" value="0"></div>
-  <div class="campo"><label>Soglia di ore/settimana considerata sostenibile per una persona sola</label><input type="number" step="0.5" id="soglia_ore" value="45"></div>
+  <div class="campo">
+    <div class="campo-riga"><label>Ore di apertura al giorno</label><input type="number" step="0.5" id="ore_apertura_giorno" value="8"></div>
+    <div class="help">Quante ore al giorno il negozio resta aperto (es. 9:00–13:00 e 15:00–19:00 = 8 ore). Default 8, orario standard di un negozio al dettaglio.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Ore/settimana per "dietro le quinte" (ordini, resi, social, magazzino)</label><input type="number" step="0.5" id="ore_retrobottega" value="6"></div>
+    <div class="help">Ore a settimana per attività che non vedono clienti: ordini ai distributori, gestione resi, social media, magazzino, contabilità di base. Default 6, stima prudente per una gestione solitaria.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Eventi al mese (libreria + Forno Demetra)</label><input type="number" step="0.5" id="eventi_mese" value="2"></div>
+    <div class="help">Quanti eventi organizzate al mese in media (presentazioni, degustazioni, letture). Default 2, un ritmo sostenibile senza saturare il calendario.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Ore per evento (organizzazione + svolgimento)</label><input type="number" step="0.5" id="ore_per_evento" value="6"></div>
+    <div class="help">Ore totali per evento, sommando organizzazione (contatti, promozione, allestimento) e svolgimento vero e proprio. Default 6.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Ore/settimana per servizi esterni (storytelling, eventi per altri)</label><input type="number" step="0.5" id="ore_servizi_esterni" value="10"></div>
+    <div class="help">Ore a settimana dedicate ai servizi professionali esterni di Federica (storytelling, organizzazione eventi per altri clienti). Default 10, per lasciare comunque spazio alla libreria.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga">
+      <label>Assumere una persona part-time?</label>
+      <select id="assumere"><option value="no">No</option><option value="si">Sì</option></select>
+    </div>
+    <div class="help">Indica se prevedete di assumere una persona part-time per alleggerire il carico orario su Federica.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Se sì: ore/settimana coperte dal part-time</label><input type="number" step="0.5" id="ore_parttime" value="0"></div>
+    <div class="help">Ore a settimana coperte dalla persona part-time, se l'avete attivata sopra. Lascia 0 se non assumete nessuno.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Soglia di ore/settimana considerata sostenibile per una persona sola</label><input type="number" step="0.5" id="soglia_ore" value="45"></div>
+    <div class="help">Il massimo di ore a settimana che ritenete sostenibile a lungo termine per una persona sola, tenendo conto di vita privata e salute. Default 45 (9 ore su 5 giorni), già oltre un tempo pieno standard.</div>
+  </div>
 </fieldset>
 
 <h2>💶 Step 2 — Costi di avviamento</h2>
 <fieldset>
-  <div class="campo"><label>Mq del locale</label><input type="number" id="mq_locale" value="22"></div>
-  <div class="campo"><label>Canone di affitto mensile (€)</label><input type="number" id="canone_mensile" value="400"></div>
-  <div class="campo"><label>Deposito cauzionale (mesi di affitto)</label><input type="number" id="deposito_mesi" value="3"></div>
-  <div class="campo"><label>Costo lavori/allestimento (€)</label><input type="number" id="costo_lavori" value="6000"></div>
-  <div class="campo"><label>Costo insegna e immagine coordinata (€)</label><input type="number" id="costo_insegna" value="1500"></div>
-  <div class="campo"><label>Costo setup software gestionale (€)</label><input type="number" id="costo_software_setup" value="500"></div>
-  <div class="campo"><label>Costo primo assortimento libri (€)</label><input type="number" id="costo_stock_iniziale" value="8000"></div>
-  <div class="campo"><label>% dello stock in conto deposito (non acquistato subito)</label><input type="number" id="perc_conto_deposito" value="30"></div>
-  <div class="campo"><label>Spese notarili/commercialista per l'apertura (€)</label><input type="number" id="costo_notaio_comm" value="800"></div>
-  <div class="campo"><label>Costo polizza fideiussoria per anticipo bando (€, 0 se non richiesta)</label><input type="number" id="costo_polizza" value="0"></div>
-  <div class="campo"><label>% delle spese di avviamento ammissibili dal bando</label><input type="number" id="perc_ammissibile_bando" value="80"></div>
-  <div class="campo"><label>% imprevisti da aggiungere</label><input type="number" id="perc_imprevisti" value="10"></div>
-  <div class="campo"><label>Liquidità propria disponibile oggi (€)</label><input type="number" id="liquidita_disponibile" value="6000"></div>
-  <div class="campo"><label>Tasso di interesse annuo del prestito/microcredito per coprire l'eventuale gap (%)</label><input type="number" step="0.1" id="tasso_prestito" value="6.5"></div>
-  <div class="campo"><label>Durata del prestito (anni)</label><input type="number" id="durata_prestito" value="7"></div>
-  <div class="campo"><label>Vita utile stimata di lavori/insegna/software, per l'ammortamento (anni)</label><input type="number" id="vita_utile_anni" value="5"></div>
-  <div class="campo"><label>Includere l'ammortamento nel calcolo di sostenibilità (test più prudente)?</label>
-    <select id="includi_ammortamento"><option value="si" selected>Sì</option><option value="no">No</option></select>
+  <p class="step-intro">Le spese una tantum per aprire: lavori, primo stock, depositi. Servono a capire quanto capitale serve avere subito, prima ancora di incassare un euro.</p>
+
+  <div class="campo">
+    <div class="campo-riga"><label>Mq del locale</label><input type="number" id="mq_locale" value="22"></div>
+    <div class="help">Metratura del locale in metri quadri. È solo un riferimento: non entra nei calcoli, serve a voi per verificare la coerenza degli altri valori (affitto, utenze).</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Canone di affitto mensile (€)</label><input type="number" id="canone_mensile" value="400"></div>
+    <div class="help">Affitto mensile del locale. Default 400€, stima per un piccolo locale commerciale in un comune come Longiano (FC) nel 2026.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Deposito cauzionale (mesi di affitto)</label><input type="number" id="deposito_mesi" value="3"></div>
+    <div class="help">Quante mensilità di affitto vengono richieste come cauzione alla firma del contratto. Default 3, la prassi più comune in Italia.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Costo lavori/allestimento (€)</label><input type="number" id="costo_lavori" value="6000"></div>
+    <div class="help">Ristrutturazione e allestimento del locale (imbiancatura, scaffalature, impianti). Default 6.000€, per un locale già agibile che richiede solo allestimento, non ristrutturazione pesante.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Costo insegna e immagine coordinata (€)</label><input type="number" id="costo_insegna" value="1500"></div>
+    <div class="help">Insegna esterna, logo, biglietti da visita, cartellonistica. Default 1.500€.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Costo setup software gestionale (€)</label><input type="number" id="costo_software_setup" value="500"></div>
+    <div class="help">Costo una tantum per attivare il gestionale di cassa/magazzino (licenza iniziale, configurazione). Il canone mensile successivo va indicato nello Step 3. Default 500€.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Costo primo assortimento libri (€)</label><input type="number" id="costo_stock_iniziale" value="8000"></div>
+    <div class="help">Valore del primo assortimento di libri da acquistare per riempire gli scaffali. Default 8.000€: una stima prudente per una libreria di piccole dimensioni (indicativamente 500-600 titoli a prezzo scontato dal distributore).</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>% dello stock in conto deposito (non acquistato subito)</label><input type="number" id="perc_conto_deposito" value="30"></div>
+    <div class="help">Percentuale del valore dello stock che i distributori/editori concedono in conto deposito (pagata solo quando venduta o restituita, non subito). Default 30%, prassi comune per librerie indipendenti nuove con piccoli editori.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Spese notarili/commercialista per l'apertura (€)</label><input type="number" id="costo_notaio_comm" value="800"></div>
+    <div class="help">Spese una tantum per l'apertura della partita IVA e l'assistenza del commercialista nella fase di avvio (non l'onorario ricorrente, quello va nello Step 3). Default 800€.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Costo polizza fideiussoria per anticipo bando (€, 0 se non richiesta)</label><input type="number" id="costo_polizza" value="0"></div>
+    <div class="help">Costo della polizza fideiussoria bancaria/assicurativa necessaria per chiedere un anticipo sul contributo del bando. Lascia 0 se non la richiedete (il contributo arriverà solo a saldo lavori, come indicato più sotto nella nota sui risultati).</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>% delle spese di avviamento ammissibili dal bando</label><input type="number" id="perc_ammissibile_bando" value="80"></div>
+    <div class="help">Percentuale delle spese di avviamento che rientrano tra le voci ammissibili dal bando MiC "Librerie Under 35" (alcune spese amministrative sono tipicamente escluse). Default 80%, stima prudente — verificare l'elenco voci ammissibili nel bando ufficiale.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>% imprevisti da aggiungere</label><input type="number" id="perc_imprevisti" value="10"></div>
+    <div class="help">Margine di sicurezza da aggiungere ai costi di avviamento per coprire spese non previste. Default 10%, standard in un business plan prudente.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Liquidità propria disponibile oggi (€)</label><input type="number" id="liquidita_disponibile" value="6000"></div>
+    <div class="help">Quanto capitale proprio avete già disponibile oggi da investire nell'apertura, senza ricorrere a prestiti.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Tasso di interesse annuo del prestito/microcredito per coprire l'eventuale gap (%)</label><input type="number" step="0.1" id="tasso_prestito" value="6.5"></div>
+    <div class="help">Tasso annuo di un prestito personale o microcredito per coprire l'eventuale differenza tra capitale necessario e liquidità disponibile. Default 6,5%, in linea con i tassi di microcredito dell'Ente Nazionale per il Microcredito nel 2026.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Durata del prestito (anni)</label><input type="number" id="durata_prestito" value="7"></div>
+    <div class="help">Durata del prestito in anni. Default 7, tipico per un microcredito d'impresa.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Vita utile stimata di lavori/insegna/software, per l'ammortamento (anni)</label><input type="number" id="vita_utile_anni" value="5"></div>
+    <div class="help">Dopo quanti anni pensate di dover rifare lavori, insegna e software. Serve solo a calcolare l'ammortamento prudenziale sotto, non è una spesa di cassa reale. Default 5 anni.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Includere l'ammortamento nel calcolo di sostenibilità (test più prudente)?</label>
+      <select id="includi_ammortamento"><option value="si" selected>Sì</option><option value="no">No</option></select>
+    </div>
+    <div class="help">Se "Sì", il calcolo finale include anche una quota mensile accantonata per rifare lavori/insegna/software tra qualche anno — un test più prudente. Nel regime forfettario non è fiscalmente obbligatorio, ma è buona pratica gestionale tenerne conto.</div>
   </div>
 </fieldset>
 
-<h2>📆 Step 2 — Costi fissi mensili</h2>
+<h2>📆 Step 3 — Costi fissi mensili</h2>
 <fieldset>
-  <div class="campo"><label>Utenze mensili (€)</label><input type="number" id="utenze_mensili" value="150"></div>
-  <div class="campo"><label>Internet/telefono mensile (€)</label><input type="number" id="telefono_mensile" value="40"></div>
-  <div class="campo"><label>Assicurazione mensile (se annua, dividi per 12) (€)</label><input type="number" id="assicurazione_mensile" value="50"></div>
-  <div class="campo"><label>Software gestionale in abbonamento, mensile (€)</label><input type="number" id="software_abbon" value="30"></div>
-  <div class="campo"><label>Commercialista, mensile o forfait/12 (€)</label><input type="number" id="commercialista_mens" value="100"></div>
-  <div class="campo"><label>Contributi INPS mensili stimati (€)</label><input type="number" id="contributi_inps" value="384"></div>
-  <div class="campo"><label>Costo mensile part-time (stipendio + contributi), se attivato (€)</label><input type="number" id="costo_parttime_mens" value="0"></div>
-  <div class="campo"><label>TARI mensile equivalente (tassa rifiuti attività commerciale) (€)</label><input type="number" id="tari_mensile" value="21"></div>
-  <div class="campo"><label>Diritto camerale CCIAA, mensile equivalente (annuo ~120€) (€)</label><input type="number" id="diritto_camerale_mensile" value="10"></div>
-  <div class="campo"><label>Canone conto corrente business, mensile (€)</label><input type="number" id="canone_conto_mensile" value="15"></div>
-  <div class="campo"><label>Canone mensile POS/pagamenti elettronici (€)</label><input type="number" id="canone_pos_mensile" value="12"></div>
-  <div class="campo"><label>Commissione % media sui pagamenti con carta/POS</label><input type="number" step="0.1" id="commissione_pos_perc" value="1"></div>
-  <div class="campo"><label>Materiali di consumo mensili (sacchetti, scontrini, imballaggi) (€)</label><input type="number" id="materiali_consumo_mensile" value="25"></div>
-  <div class="campo"><label>Pubblicità/marketing a pagamento, mensile (0 se solo organico) (€)</label><input type="number" id="pubblicita_mensile" value="0"></div>
+  <p class="step-intro">Tutte le uscite ricorrenti, mese per mese, una volta che l'attività è aperta.</p>
+
+  <div class="campo">
+    <div class="campo-riga"><label>Utenze mensili (€)</label><input type="number" id="utenze_mensili" value="150"></div>
+    <div class="help">Luce, gas/riscaldamento, acqua. Default 150€/mese, stima per un locale di circa 20-25 mq.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Internet/telefono mensile (€)</label><input type="number" id="telefono_mensile" value="40"></div>
+    <div class="help">Linea internet e telefono fisso/mobile dell'attività. Default 40€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Assicurazione mensile (se annua, dividi per 12) (€)</label><input type="number" id="assicurazione_mensile" value="50"></div>
+    <div class="help">Polizza assicurativa dell'attività (RC, incendio, furto). Se la paghi annualmente, dividi il totale per 12. Default 50€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Software gestionale in abbonamento, mensile (€)</label><input type="number" id="software_abbon" value="30"></div>
+    <div class="help">Canone mensile del gestionale di cassa/magazzino (non il setup iniziale, quello è nello Step 2). Default 30€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Commercialista, mensile o forfait/12 (€)</label><input type="number" id="commercialista_mens" value="100"></div>
+    <div class="help">Onorario ricorrente del commercialista (tenuta contabilità, dichiarazioni). Se paghi un forfait annuo, dividilo per 12. Default 100€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Contributi INPS mensili stimati (€)</label><input type="number" id="contributi_inps" value="384"></div>
+    <div class="help">Contributi previdenziali INPS mensili in regime forfettario. Default 384€/mese, basato sulla circolare INPS 14/2026 per la gestione commercianti (importo minimo dovuto indipendentemente dal reddito nei primi anni) — verificare l'importo aggiornato con il proprio commercialista.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Costo mensile part-time (stipendio + contributi), se attivato (€)</label><input type="number" id="costo_parttime_mens" value="0"></div>
+    <div class="help">Costo mensile totale (stipendio lordo + contributi a carico azienda) della persona part-time, se l'hai attivata nello Step 1. Lascia 0 se non assumi nessuno.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>TARI mensile equivalente (tassa rifiuti attività commerciale) (€)</label><input type="number" id="tari_mensile" value="21"></div>
+    <div class="help">Tassa rifiuti per attività commerciale, equivalente mensile. Default 21€/mese (~250€/anno), stima da tariffe ARERA/comunali per piccoli esercizi.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Diritto camerale CCIAA, mensile equivalente (annuo ~120€) (€)</label><input type="number" id="diritto_camerale_mensile" value="10"></div>
+    <div class="help">Diritto camerale annuale CCIAA diviso per 12. Default 10€/mese (~120€/anno), importo standard per micro-imprese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Canone conto corrente business, mensile (€)</label><input type="number" id="canone_conto_mensile" value="15"></div>
+    <div class="help">Canone mensile di un conto corrente dedicato all'attività. Default 15€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Canone mensile POS/pagamenti elettronici (€)</label><input type="number" id="canone_pos_mensile" value="12"></div>
+    <div class="help">Canone fisso mensile per il noleggio/gestione del terminale POS. Default 12€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Commissione % media sui pagamenti con carta/POS</label><input type="number" step="0.1" id="commissione_pos_perc" value="1"></div>
+    <div class="help">Percentuale trattenuta dal gestore POS su ogni pagamento con carta. Default 1%, in linea con le commissioni medie per micro-esercenti rilevate dal Politecnico di Milano nel 2026.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Materiali di consumo mensili (sacchetti, scontrini, imballaggi) (€)</label><input type="number" id="materiali_consumo_mensile" value="25"></div>
+    <div class="help">Sacchetti, scontrini, imballaggi e piccoli materiali di consumo per la vendita. Default 25€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Pubblicità/marketing a pagamento, mensile (0 se solo organico) (€)</label><input type="number" id="pubblicita_mensile" value="0"></div>
+    <div class="help">Spesa mensile in pubblicità a pagamento (social ads, volantini stampati). Lascia 0 se conti solo su promozione organica/passaparola.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Manutenzione e piccole riparazioni, mensile (€)</label><input type="number" id="manutenzione_mensile" value="20"></div>
+    <div class="help">Piccole manutenzioni e riparazioni (scaffalature, impianti, attrezzature). Default 20€/mese: una voce piccola ma spesso dimenticata nei preventivi iniziali.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Formazione/aggiornamento professionale, mensile (€)</label><input type="number" id="formazione_mensile" value="15"></div>
+    <div class="help">Corsi, fiere di settore, aggiornamento professionale (es. corsi di libreria, fiere del libro). Default 15€/mese (~180€/anno).</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>RC professionale per gli eventi, mensile (€)</label><input type="number" id="rc_professionale_mensile" value="10"></div>
+    <div class="help">Assicurazione di responsabilità civile per gli eventi in negozio (es. in caso di infortunio di un partecipante). Default 10€/mese, stima orientativa — verificare con un broker assicurativo.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Trasporto/consegna libri, mensile (€)</label><input type="number" id="trasporto_libri_mensile" value="20"></div>
+    <div class="help">Corriere/trasporto per la consegna dei libri dai distributori e per gli eventuali resi. Default 20€/mese.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Buffer imprevisti sui costi fissi mensili (%)</label><input type="number" step="0.5" id="buffer_costi_fissi_perc" value="5"></div>
+    <div class="help">Margine di sicurezza sui costi fissi mensili ricorrenti, per coprire piccole spese non previste in questa lista. Default 5%, più basso del 10% dei costi di avviamento perché qui le voci sono già più dettagliate.</div>
+  </div>
 </fieldset>
 
-<h2>📈 Step 3 — Ricavi</h2>
+<h2>📈 Step 4 — Ricavi</h2>
 <fieldset>
-  <div class="campo"><label>Prezzo medio di copertina di un libro (€)</label><input type="number" step="0.5" id="prezzo_medio_libro" value="17"></div>
-  <div class="campo"><label>Margine % trattenuto sul prezzo di copertina</label><input type="number" id="margine_libro_perc" value="32"></div>
-  <div class="campo"><label>Persone che entrano in negozio in un giorno feriale medio</label><input type="number" id="persone_giorno" value="15"></div>
-  <div class="campo"><label>% di chi entra che compra qualcosa</label><input type="number" id="perc_acquisto" value="30"></div>
+  <p class="step-intro">I flussi di incasso, a regime (cioè una volta che l'attività ha raggiunto il suo ritmo di crociera — la crescita graduale iniziale si stima nello Step 5).</p>
 
-  <div class="campo"><label>Prezzo medio biglietto/evento a pagamento (€)</label><input type="number" step="0.5" id="prezzo_evento" value="12"></div>
-  <div class="campo"><label>Capienza media di un evento (persone)</label><input type="number" id="capienza_evento" value="20"></div>
-  <div class="campo"><label>% incasso che resta a voi se l'evento è al Forno Demetra (100 se non condiviso)</label><input type="number" id="perc_trattenuta_demetra" value="100"></div>
-  <div class="campo"><label>Costo materie prime per evento/degustazione (€)</label><input type="number" id="materie_prime_evento" value="50"></div>
-
-  <div class="campo"><label>Vendere prodotti alimentari da subito?</label>
-    <select id="vendi_prodotti"><option value="si">Sì</option><option value="no">No</option></select>
+  <div class="campo">
+    <div class="campo-riga"><label>Prezzo medio di copertina di un libro (€)</label><input type="number" step="0.5" id="prezzo_medio_libro" value="17"></div>
+    <div class="help">Prezzo di copertina medio dei libri venduti. Default 17€, prezzo medio di mercato per narrativa/saggistica secondo i dati AIE (Associazione Italiana Editori) 2026.</div>
   </div>
-  <div class="campo"><label>Quanti prodotti alimentari venduti al giorno</label><input type="number" step="0.5" id="prodotti_al_giorno" value="3"></div>
-  <div class="campo"><label>Scontrino medio prodotto alimentare (€)</label><input type="number" step="0.5" id="scontrino_prodotto" value="10"></div>
-  <div class="campo"><label>Margine % medio sui prodotti alimentari</label><input type="number" id="margine_prodotto_perc" value="45"></div>
-
-  <div class="campo"><label>Attivare l'abbonamento book club da subito?</label>
-    <select id="attiva_abbonamento"><option value="si">Sì</option><option value="no">No</option></select>
+  <div class="campo">
+    <div class="campo-riga"><label>Margine % trattenuto sul prezzo di copertina</label><input type="number" id="margine_libro_perc" value="32"></div>
+    <div class="help">Percentuale del prezzo di copertina che resta al libraio dopo aver pagato il distributore/editore. Default 32%, margine medio per librerie indipendenti in Italia (l'editore trattiene tipicamente il 65-68%).</div>
   </div>
-  <div class="campo"><label>Periodicità abbonamento</label>
-    <select id="periodicita_abbon"><option value="mensile">Mensile</option><option value="annuale">Annuale</option></select>
+  <div class="campo">
+    <div class="campo-riga"><label>Persone che entrano in negozio in un giorno feriale medio</label><input type="number" id="persone_giorno" value="15"></div>
+    <div class="help">Quante persone entrano in negozio in un giorno feriale medio (giorni di eventi esclusi). È la stima più incerta di tutto lo strumento: aggiornatela appena avete dati reali dai primi mesi.</div>
   </div>
-  <div class="campo"><label>Prezzo abbonamento (€, secondo periodicità)</label><input type="number" step="0.5" id="prezzo_abbonamento" value="15"></div>
-  <div class="campo"><label>Numero abbonati stimato nei primi mesi</label><input type="number" id="numero_abbonati" value="10"></div>
-
-  <div class="campo"><label>Includere i workshop di scrittura come flusso separato?</label>
-    <select id="attiva_workshop"><option value="si">Sì</option><option value="no">No</option></select>
+  <div class="campo">
+    <div class="campo-riga"><label>% di chi entra che compra qualcosa</label><input type="number" id="perc_acquisto" value="30"></div>
+    <div class="help">Percentuale di chi entra che compra almeno un libro. Default 30%, stima prudente per un negozio nuovo senza ancora una clientela fidelizzata.</div>
   </div>
-  <div class="campo"><label>Prezzo a partecipante workshop (€)</label><input type="number" step="0.5" id="prezzo_workshop" value="25"></div>
-  <div class="campo"><label>Capienza media workshop (persone)</label><input type="number" id="capienza_workshop" value="10"></div>
-  <div class="campo"><label>Workshop al mese</label><input type="number" step="0.5" id="workshop_al_mese" value="1"></div>
 
-  <div class="campo"><label>Includere un angolo oggettistica/cartoleria a tema?</label>
-    <select id="attiva_oggettistica"><option value="si">Sì</option><option value="no">No</option></select>
+  <div class="campo">
+    <div class="campo-riga"><label>Prezzo medio biglietto/evento a pagamento (€)</label><input type="number" step="0.5" id="prezzo_evento" value="12"></div>
+    <div class="help">Prezzo medio del biglietto per un evento a pagamento (degustazione, presentazione con consumazione). Default 12€.</div>
   </div>
-  <div class="campo"><label>Scontrino medio oggettistica (€)</label><input type="number" step="0.5" id="scontrino_oggetti" value="15"></div>
-  <div class="campo"><label>Margine % oggettistica</label><input type="number" id="margine_oggetti_perc" value="50"></div>
-  <div class="campo"><label>Pezzi di oggettistica venduti al mese</label><input type="number" id="oggetti_al_mese" value="5"></div>
+  <div class="campo">
+    <div class="campo-riga"><label>Capienza media di un evento (persone)</label><input type="number" id="capienza_evento" value="20"></div>
+    <div class="help">Numero massimo di posti disponibili nello spazio a disposizione. Il ricavo reale userà il tasso di riempimento qui sotto, non questo numero al 100%.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Tasso di riempimento medio eventi (% della capienza)</label><input type="number" id="tasso_riempimento_evento" value="60"></div>
+    <div class="help">Percentuale media dei posti effettivamente occupati a evento, sul totale della capienza indicata sopra. Default 60%: assumere sempre il tutto esaurito è la causa più comune di stime di ricavo troppo ottimistiche.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>% incasso che resta a voi se l'evento è al Forno Demetra (100 se non condiviso)</label><input type="number" id="perc_trattenuta_demetra" value="100"></div>
+    <div class="help">Se l'evento si svolge al Forno Demetra con incasso condiviso, indicate la percentuale che resta a voi. Lascia 100 se l'evento è interamente vostro o l'incasso non è condiviso.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Costo materie prime per evento/degustazione (€)</label><input type="number" id="materie_prime_evento" value="50"></div>
+    <div class="help">Costo degli ingredienti/materie prime per una degustazione o un evento a tema food. Default 50€ a evento.</div>
+  </div>
 
-  <div class="campo"><label>Tariffa oraria media servizi professionali esterni (€)</label><input type="number" step="0.5" id="tariffa_servizi_esterni" value="25"></div>
-  <div class="campo"><label>Entrate fisse già esistenti al mese (es. Sabri) (€)</label><input type="number" id="entrate_fisse_esistenti" value="500"></div>
+  <div class="campo">
+    <div class="campo-riga">
+      <label>Vendere prodotti alimentari da subito?</label>
+      <select id="vendi_prodotti"><option value="si">Sì</option><option value="no">No</option></select>
+    </div>
+    <div class="help">Indica se venderete anche prodotti alimentari (es. in collaborazione col Forno Demetra) fin dall'apertura.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Quanti prodotti alimentari venduti al giorno</label><input type="number" step="0.5" id="prodotti_al_giorno" value="3"></div>
+    <div class="help">Quanti prodotti alimentari vendete in media al giorno. Default 3, stima prudente per iniziare.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Scontrino medio prodotto alimentare (€)</label><input type="number" step="0.5" id="scontrino_prodotto" value="10"></div>
+    <div class="help">Prezzo medio di vendita di un prodotto alimentare. Default 10€.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Margine % medio sui prodotti alimentari</label><input type="number" id="margine_prodotto_perc" value="45"></div>
+    <div class="help">Percentuale del prezzo di vendita che resta a voi dopo il costo delle materie prime/fornitura. Default 45%, tipico per prodotti food con filiera corta.</div>
+  </div>
+
+  <div class="campo">
+    <div class="campo-riga">
+      <label>Attivare l'abbonamento book club da subito?</label>
+      <select id="attiva_abbonamento"><option value="si">Sì</option><option value="no">No</option></select>
+    </div>
+    <div class="help">Indica se lancerete un abbonamento book club fin dall'apertura.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Periodicità abbonamento</label>
+      <select id="periodicita_abbon"><option value="mensile">Mensile</option><option value="annuale">Annuale</option></select>
+    </div>
+    <div class="help">Se l'abbonamento si paga ogni mese o una volta l'anno.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Prezzo abbonamento (€, secondo periodicità)</label><input type="number" step="0.5" id="prezzo_abbonamento" value="15"></div>
+    <div class="help">Prezzo dell'abbonamento secondo la periodicità scelta sopra (es. 15€/mese oppure 150€/anno).</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Numero abbonati stimato nei primi mesi</label><input type="number" id="numero_abbonati" value="10"></div>
+    <div class="help">Quanti abbonati prevedete nei primi mesi. Default 10, un numero raggiungibile con una community locale appena avviata.</div>
+  </div>
+
+  <div class="campo">
+    <div class="campo-riga">
+      <label>Includere i workshop di scrittura come flusso separato?</label>
+      <select id="attiva_workshop"><option value="si">Sì</option><option value="no">No</option></select>
+    </div>
+    <div class="help">Indica se organizzerete workshop di scrittura come flusso di ricavo separato dagli altri eventi.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Prezzo a partecipante workshop (€)</label><input type="number" step="0.5" id="prezzo_workshop" value="25"></div>
+    <div class="help">Prezzo a partecipante per un workshop.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Capienza media workshop (persone)</label><input type="number" id="capienza_workshop" value="10"></div>
+    <div class="help">Numero massimo di partecipanti per workshop. Anche qui il ricavo reale userà il tasso di riempimento qui sotto.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Tasso di riempimento medio workshop (% della capienza)</label><input type="number" id="tasso_riempimento_workshop" value="70"></div>
+    <div class="help">Percentuale media dei posti occupati sul totale della capienza indicata sopra. Default 70%, leggermente più alto degli eventi generici perché un workshop a pagamento attrae partecipanti già motivati.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Workshop al mese</label><input type="number" step="0.5" id="workshop_al_mese" value="1"></div>
+    <div class="help">Quanti workshop organizzate al mese in media.</div>
+  </div>
+
+  <div class="campo">
+    <div class="campo-riga">
+      <label>Includere un angolo oggettistica/cartoleria a tema?</label>
+      <select id="attiva_oggettistica"><option value="si">Sì</option><option value="no">No</option></select>
+    </div>
+    <div class="help">Indica se includerete un angolo di oggettistica/cartoleria a tema libreria.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Scontrino medio oggettistica (€)</label><input type="number" step="0.5" id="scontrino_oggetti" value="15"></div>
+    <div class="help">Prezzo medio di vendita di un pezzo di oggettistica.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Margine % oggettistica</label><input type="number" id="margine_oggetti_perc" value="50"></div>
+    <div class="help">Percentuale del prezzo di vendita che resta a voi. Default 50%, margine tipico per oggettistica/cartoleria.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Pezzi di oggettistica venduti al mese</label><input type="number" id="oggetti_al_mese" value="5"></div>
+    <div class="help">Quanti pezzi di oggettistica vendete in media al mese. Default 5, stima prudente per un flusso accessorio.</div>
+  </div>
+
+  <div class="campo">
+    <div class="campo-riga"><label>Tariffa oraria media servizi professionali esterni (€)</label><input type="number" step="0.5" id="tariffa_servizi_esterni" value="25"></div>
+    <div class="help">Tariffa oraria media applicata da Federica per i servizi professionali esterni (storytelling, organizzazione eventi per altri clienti).</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>% ore servizi esterni effettivamente fatturabili</label><input type="number" id="perc_ore_fatturabili_servizi" value="80"></div>
+    <div class="help">Percentuale delle ore dedicate ai servizi esterni (Step 1) che vengono davvero fatturate a un cliente. Default 80%: una parte del tempo va sempre in ricerca clienti, preventivi e organizzazione non fatturabile.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Entrate fisse già esistenti al mese (es. Sabri) (€)</label><input type="number" id="entrate_fisse_esistenti" value="500"></div>
+    <div class="help">Entrate mensili che Federica ha già oggi e che continueranno anche dopo l'apertura (es. clienti/collaborazioni esistenti come Sabri), indipendenti dalla nuova attività.</div>
+  </div>
 </fieldset>
 
-<h2>🎯 Step 4 — Obiettivo</h2>
+<h2>🔮 Step 5 — Prudenza e proiezione nel tempo</h2>
 <fieldset>
-  <div class="campo"><label>Stipendio netto mensile minimo da raggiungere entro 12-18 mesi (€)</label><input type="number" id="stipendio_target" value="1200"></div>
-  <div class="campo"><label>Aliquota fiscale media stimata sul reddito (%)</label><input type="number" step="0.5" id="aliquota_fiscale" value="5"></div>
+  <p class="step-intro">I ricavi dello Step 4 sono "a regime": nessuna attività nuova parte già a pieno ritmo. Qui stimate quanto tempo serve per arrivarci e come si comporta la cassa nel frattempo, più uno scenario più prudente di confronto.</p>
+
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Mesi per raggiungere il regime pieno di ricavi</label><input type="number" id="mesi_rampa" value="9"></div>
+    <div class="help">Quanti mesi dall'apertura ci vorranno per raggiungere i ricavi "a regime" stimati nello Step 4. Default 9 mesi: una crescita graduale ragionevole per un'attività locale in una piccola realtà come Longiano.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>% del regime già raggiunta al primo mese</label><input type="number" id="perc_ricavi_mese1" value="30"></div>
+    <div class="help">Percentuale del regime a pieno ritmo che pensate di raggiungere già nel primo mese di apertura, grazie all'effetto "novità" e all'inaugurazione. Default 30%.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Mesi dopo l'apertura in cui arriva il saldo del bando</label><input type="number" id="mesi_arrivo_bando" value="12"></div>
+    <div class="help">Il bando MiC rimborsa a saldo lavori ultimati e rendicontati, non in anticipo (salvo l'eventuale anticipo con fideiussione già considerato nello Step 2). Default 12 mesi: verificate i tempi effettivi nel bando ufficiale, possono variare.</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label><span class="nuovo-tag">NUOVO</span>Riduzione ricavi per lo scenario prudente (%)</label><input type="number" id="buffer_ricavi_prudente_perc" value="20"></div>
+    <div class="help">Di quanto ridurre i ricavi stimati per costruire uno scenario prudente di confronto, e verificare se il piano regge anche se le cose vanno un po' peggio del previsto. Default 20%, margine comunemente usato nei business plan per questo tipo di test.</div>
+  </div>
 </fieldset>
-<p class="nota" style="margin-top:-4px;">Il netto che vuoi in tasca non è la cifra da coprire: su quell'utile si pagano le tasse (imposta sostitutiva nel regime forfettario). Il 5% è l'aliquota agevolata per le nuove attività nei primi 5 anni — da confermare col commercialista; l'aliquota ordinaria forfettario è 15%.</p>
+
+<h2>🎯 Step 6 — Obiettivo</h2>
+<fieldset>
+  <p class="step-intro">Quanto deve rimanere in tasca a Federica ogni mese, al netto delle tasse.</p>
+
+  <div class="campo">
+    <div class="campo-riga"><label>Stipendio netto mensile minimo da raggiungere entro 12-18 mesi (€)</label><input type="number" id="stipendio_target" value="1200"></div>
+    <div class="help">Lo stipendio netto mensile minimo che serve per vivere, da raggiungere entro 12-18 mesi dall'apertura (la Step 5 stima se e quando questo è realistico dato il tempo di crescita).</div>
+  </div>
+  <div class="campo">
+    <div class="campo-riga"><label>Aliquota fiscale media stimata sul reddito (%)</label><input type="number" step="0.5" id="aliquota_fiscale" value="5"></div>
+    <div class="help">Il netto che volete in tasca non è la cifra da coprire: su quell'utile si pagano le tasse (imposta sostitutiva nel regime forfettario). Il 5% è l'aliquota agevolata per le nuove attività nei primi 5 anni — da confermare col commercialista se Federica rientra nei requisiti; l'aliquota ordinaria forfettario è 15%.</div>
+  </div>
+</fieldset>
 
 <button class="btn" type="submit">Calcola →</button>
 </form>
 
 <p class="nota">
 Strumento di stima approssimata a uso interno, non sostituisce il business plan formale né una consulenza di un commercialista.<br>
-I valori precompilati sono stime plausibili basate su dati di mercato 2026 (AIE, INPS, CCIAA, ARERA) — vanno sempre sostituiti con i dati reali della vostra situazione.
+I valori precompilati sono stime plausibili basate su dati di mercato 2026 (AIE, INPS, CCIAA, ARERA, Ente Nazionale Microcredito) — vanno sempre sostituiti con i dati reali della vostra situazione. Le spiegazioni sotto ogni campo indicano da dove viene ciascun default.
 </p>
 
 <script>
@@ -269,7 +550,9 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const capex_netto_ammortizzabile = capex_ammortizzabile - quota_capex_coperta_bando;
   const ammortamento_mensile = vita_utile_anni > 0 ? capex_netto_ammortizzabile / (vita_utile_anni * 12) : 0;
 
-  // ---------- STEP 2: COSTI FISSI MENSILI ----------
+  const cash_start = liquidita_disponibile - Math.min(liquidita_disponibile, capitale_necessario_subito);
+
+  // ---------- STEP 3: COSTI FISSI MENSILI ----------
   const utenze_mensili = num('utenze_mensili');
   const telefono_mensile = num('telefono_mensile');
   const assicurazione_mensile = num('assicurazione_mensile');
@@ -284,14 +567,24 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const commissione_pos_perc = num('commissione_pos_perc');
   const materiali_consumo_mensile = num('materiali_consumo_mensile');
   const pubblicita_mensile = num('pubblicita_mensile');
+  const manutenzione_mensile = num('manutenzione_mensile');
+  const formazione_mensile = num('formazione_mensile');
+  const rc_professionale_mensile = num('rc_professionale_mensile');
+  const trasporto_libri_mensile = num('trasporto_libri_mensile');
+  const buffer_costi_fissi_perc = num('buffer_costi_fissi_perc', 5);
 
   const cf_sola = canone_mensile + utenze_mensili + telefono_mensile + assicurazione_mensile
                 + software_abbon + commercialista_mens + contributi_inps
                 + tari_mensile + diritto_camerale_mensile + canone_conto_mensile
-                + canone_pos_mensile + materiali_consumo_mensile + pubblicita_mensile;
-  let cf_scelto = cf_sola + costo_parttime_mens;
+                + canone_pos_mensile + materiali_consumo_mensile + pubblicita_mensile
+                + manutenzione_mensile + formazione_mensile + rc_professionale_mensile
+                + trasporto_libri_mensile;
 
-  // ---------- STEP 3: RICAVI ----------
+  const buffer_costi_fissi_importo = cf_sola * (buffer_costi_fissi_perc / 100);
+  const cf_sola_con_buffer = cf_sola + buffer_costi_fissi_importo;
+  let cf_scelto = cf_sola_con_buffer + costo_parttime_mens;
+
+  // ---------- STEP 4: RICAVI ----------
   const prezzo_medio_libro = num('prezzo_medio_libro');
   const margine_libro_perc = num('margine_libro_perc', 32);
   const persone_giorno = num('persone_giorno');
@@ -299,6 +592,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
 
   const prezzo_evento = num('prezzo_evento');
   const capienza_evento = num('capienza_evento');
+  const tasso_riempimento_evento = num('tasso_riempimento_evento', 60);
   const perc_trattenuta_demetra = num('perc_trattenuta_demetra', 100);
   const materie_prime_evento = num('materie_prime_evento');
 
@@ -315,6 +609,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const attiva_workshop = yn('attiva_workshop');
   const prezzo_workshop = num('prezzo_workshop');
   const capienza_workshop = num('capienza_workshop');
+  const tasso_riempimento_workshop = num('tasso_riempimento_workshop', 70);
   const workshop_al_mese = num('workshop_al_mese');
 
   const attiva_oggettistica = yn('attiva_oggettistica');
@@ -323,6 +618,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const oggetti_al_mese = num('oggetti_al_mese');
 
   const tariffa_servizi_esterni = num('tariffa_servizi_esterni');
+  const perc_ore_fatturabili_servizi = num('perc_ore_fatturabili_servizi', 80);
   const entrate_fisse_esistenti = num('entrate_fisse_esistenti');
 
   const stipendio_target = num('stipendio_target');
@@ -333,7 +629,8 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const margine_unitario_libro = prezzo_medio_libro * (margine_libro_perc / 100);
   const ricavo_libri_mese = persone_giorno * (perc_acquisto / 100) * margine_unitario_libro * giorni_apertura_mese;
 
-  const margine_evento_unitario = ((prezzo_evento * capienza_evento) - materie_prime_evento) * (perc_trattenuta_demetra / 100);
+  const partecipanti_attesi_evento = capienza_evento * (tasso_riempimento_evento / 100);
+  const margine_evento_unitario = ((prezzo_evento * partecipanti_attesi_evento) - materie_prime_evento) * (perc_trattenuta_demetra / 100);
   const ricavo_eventi_mese = eventi_mese * margine_evento_unitario;
 
   let ricavo_prodotti_mese = 0;
@@ -348,8 +645,9 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   }
 
   let ricavo_workshop_mese = 0;
+  const partecipanti_attesi_workshop = capienza_workshop * (tasso_riempimento_workshop / 100);
   if (attiva_workshop) {
-    ricavo_workshop_mese = workshop_al_mese * prezzo_workshop * capienza_workshop;
+    ricavo_workshop_mese = workshop_al_mese * prezzo_workshop * partecipanti_attesi_workshop;
   }
 
   let ricavo_oggetti_mese = 0;
@@ -357,15 +655,16 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
     ricavo_oggetti_mese = oggetti_al_mese * scontrino_oggetti * (margine_oggetti_perc / 100);
   }
 
-  const ricavo_servizi_mese = tariffa_servizi_esterni * ore_servizi_esterni * WEEKS;
+  const ore_servizi_mese_stimate = ore_servizi_esterni * WEEKS;
+  const ore_fatturabili_mese_stimate = ore_servizi_mese_stimate * (perc_ore_fatturabili_servizi / 100);
+  const ricavo_servizi_mese = tariffa_servizi_esterni * ore_fatturabili_mese_stimate;
 
   // ---------- QUANTITA' STIMATE (numeri, non solo euro) ----------
   const libri_giorno_stimati = persone_giorno * (perc_acquisto / 100);
   const libri_mese_stimati = libri_giorno_stimati * giorni_apertura_mese;
-  const partecipanti_eventi_mese = eventi_mese * capienza_evento;
+  const partecipanti_eventi_mese = eventi_mese * partecipanti_attesi_evento;
   const prodotti_mese_stimati = prodotti_al_giorno * giorni_apertura_mese;
-  const partecipanti_workshop_mese = workshop_al_mese * capienza_workshop;
-  const ore_servizi_mese_stimate = ore_servizi_esterni * WEEKS;
+  const partecipanti_workshop_mese = workshop_al_mese * partecipanti_attesi_workshop;
 
   const ricavo_totale_stimato = ricavo_libri_mese + ricavo_eventi_mese + ricavo_prodotti_mese
                               + ricavo_abbonamenti_mese + ricavo_workshop_mese + ricavo_oggetti_mese
@@ -377,7 +676,9 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const commissione_pos_mensile = base_incassi_pos * (commissione_pos_perc / 100);
   cf_scelto = cf_scelto + commissione_pos_mensile + rata_mutuo_mensile;
 
-  // ---------- STEP 4: VERIFICA ----------
+  const cf_fisso_puro = cf_sola_con_buffer + costo_parttime_mens + rata_mutuo_mensile;
+
+  // ---------- STEP 6: VERIFICA (scenario base) ----------
   const fabbisogno_mensile = cf_scelto + stipendio_lordo_necessario + (includi_ammortamento ? ammortamento_mensile : 0);
   const differenza = ricavo_totale_stimato - fabbisogno_mensile;
   const piano_regge = differenza >= 0;
@@ -390,6 +691,49 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const ore_extra_servizi_sett = (tariffa_servizi_esterni > 0)
     ? (gap_mensile / WEEKS) / tariffa_servizi_esterni : null;
 
+  // ---------- STEP 5: SCENARIO PRUDENTE ----------
+  const buffer_ricavi_prudente_perc = num('buffer_ricavi_prudente_perc', 20);
+  const ricavi_variabili_regime = ricavo_totale_stimato - entrate_fisse_esistenti;
+  const fattore_prudente = 1 - (buffer_ricavi_prudente_perc / 100);
+  const ricavi_prudenti = entrate_fisse_esistenti + ricavi_variabili_regime * fattore_prudente;
+  const base_pos_prudente = base_incassi_pos * fattore_prudente;
+  const commissione_pos_prudente = base_pos_prudente * (commissione_pos_perc / 100);
+  const cf_scelto_prudente = cf_fisso_puro + commissione_pos_prudente;
+  const fabbisogno_prudente = cf_scelto_prudente + stipendio_lordo_necessario + (includi_ammortamento ? ammortamento_mensile : 0);
+  const differenza_prudente = ricavi_prudenti - fabbisogno_prudente;
+
+  // ---------- STEP 5: PROIEZIONE LIQUIDITA' (18 mesi) ----------
+  const mesi_rampa = Math.max(1, num('mesi_rampa', 9));
+  const perc_ricavi_mese1 = num('perc_ricavi_mese1', 30);
+  const mesi_arrivo_bando = Math.round(num('mesi_arrivo_bando', 12));
+
+  const MESI_PROIEZIONE = 18;
+  const checkpointMesi = [1,3,6,9,12,15,18];
+  let cassa = cash_start;
+  let cassaMin = cassa;
+  let meseCassaMin = 0;
+  const proiezione = [];
+
+  for (let m = 1; m <= MESI_PROIEZIONE; m++) {
+    const p0 = perc_ricavi_mese1 / 100;
+    const t = mesi_rampa <= 1 ? 1 : Math.min(1, (m - 1) / (mesi_rampa - 1));
+    const frazione = Math.min(1, p0 + (1 - p0) * t);
+
+    const ricavi_m = ricavi_variabili_regime * frazione + entrate_fisse_esistenti;
+    const base_pos_m = base_incassi_pos * frazione;
+    const commissione_pos_m = base_pos_m * (commissione_pos_perc / 100);
+    const costi_m = cf_fisso_puro + commissione_pos_m;
+    const flusso_m = ricavi_m - costi_m;
+
+    cassa += flusso_m;
+    if (m === mesi_arrivo_bando) cassa += contributo_bando_atteso;
+
+    if (cassa < cassaMin) { cassaMin = cassa; meseCassaMin = m; }
+    if (checkpointMesi.includes(m)) {
+      proiezione.push({ m, frazione, ricavi_m, costi_m, cassa });
+    }
+  }
+
   // ---------- RENDER ----------
   const div = document.getElementById('risultati');
   div.className = piano_regge ? '' : 'negativo';
@@ -398,21 +742,26 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   let html = '<h3 class="sub">Risultato</h3>';
   html += `<div class="verdetto ${piano_regge ? 'ok' : 'no'}">`;
   html += piano_regge
-    ? `✅ Il piano regge: avanzo stimato di ${euro2(differenza)} al mese`
-    : `⚠️ Manca ${euro2(gap_mensile)} al mese per raggiungere l'obiettivo`;
+    ? `✅ Il piano regge a regime: avanzo stimato di ${euro2(differenza)} al mese`
+    : `⚠️ Manca ${euro2(gap_mensile)} al mese per raggiungere l'obiettivo, a regime`;
   html += '</div>';
 
   html += '<table><tr><th>Voce</th><th class="num">Quantità</th><th class="num">Mensile</th></tr>';
   html += `<tr><td>Ricavo libri (da traffico stimato)</td><td class="num">${n1(libri_giorno_stimati)} libri/giorno (~${n1(libri_mese_stimati)}/mese)</td><td class="num">${euro2(ricavo_libri_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo eventi (netto)</td><td class="num">${n1(eventi_mese)} eventi/mese, ${n1(partecipanti_eventi_mese)} partecipanti</td><td class="num">${euro2(ricavo_eventi_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo eventi (netto)</td><td class="num">${n1(eventi_mese)} eventi/mese, ${n1(partecipanti_eventi_mese)} partecipanti attesi (${n1(tasso_riempimento_evento)}% di ${n1(capienza_evento)})</td><td class="num">${euro2(ricavo_eventi_mese)}</td></tr>`;
   html += `<tr><td>Ricavo prodotti alimentari</td><td class="num">${n1(prodotti_al_giorno)}/giorno (~${n1(prodotti_mese_stimati)}/mese)</td><td class="num">${euro2(ricavo_prodotti_mese)}</td></tr>`;
   html += `<tr><td>Ricavo abbonamenti book club</td><td class="num">${n1(numero_abbonati)} abbonati</td><td class="num">${euro2(ricavo_abbonamenti_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo workshop</td><td class="num">${n1(workshop_al_mese)}/mese, ${n1(partecipanti_workshop_mese)} partecipanti</td><td class="num">${euro2(ricavo_workshop_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo workshop</td><td class="num">${n1(workshop_al_mese)}/mese, ${n1(partecipanti_workshop_mese)} partecipanti attesi (${n1(tasso_riempimento_workshop)}% di ${n1(capienza_workshop)})</td><td class="num">${euro2(ricavo_workshop_mese)}</td></tr>`;
   html += `<tr><td>Ricavo oggettistica</td><td class="num">${n1(oggetti_al_mese)} pezzi/mese</td><td class="num">${euro2(ricavo_oggetti_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo servizi professionali esterni</td><td class="num">${n1(ore_servizi_mese_stimate)} ore/mese</td><td class="num">${euro2(ricavo_servizi_mese)}</td></tr>`;
+  html += `<tr><td>Ricavo servizi professionali esterni</td><td class="num">${n1(ore_servizi_mese_stimate)} ore/mese (${n1(ore_fatturabili_mese_stimate)} fatturabili)</td><td class="num">${euro2(ricavo_servizi_mese)}</td></tr>`;
   html += `<tr><td>Entrate fisse già esistenti</td><td class="num">—</td><td class="num">${euro2(entrate_fisse_esistenti)}</td></tr>`;
   html += `<tr class="sezione-titolo"><td>TOTALE RICAVI STIMATI</td><td class="num"></td><td class="num">${euro2(ricavo_totale_stimato)}</td></tr>`;
-  html += `<tr><td>Costi fissi mensili (scenario scelto, incl. commissioni POS ${euro2(commissione_pos_mensile)} e rata prestito ${euro2(rata_mutuo_mensile)})</td><td class="num"></td><td class="num">${euro2(cf_scelto)}</td></tr>`;
+  html += `<tr><td class="riga-sub">&nbsp;&nbsp;Costi fissi "base" (utenze, INPS, TARI, manutenzione, ecc.)</td><td class="num"></td><td class="num">${euro2(cf_sola)}</td></tr>`;
+  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Buffer imprevisti (${n1(buffer_costi_fissi_perc)}%)</td><td class="num"></td><td class="num">${euro2(buffer_costi_fissi_importo)}</td></tr>`;
+  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Part-time (se attivato)</td><td class="num"></td><td class="num">${euro2(costo_parttime_mens)}</td></tr>`;
+  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Commissioni POS</td><td class="num"></td><td class="num">${euro2(commissione_pos_mensile)}</td></tr>`;
+  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Rata prestito</td><td class="num"></td><td class="num">${euro2(rata_mutuo_mensile)}</td></tr>`;
+  html += `<tr><td>Costi fissi mensili totali</td><td class="num"></td><td class="num">${euro2(cf_scelto)}</td></tr>`;
   html += `<tr><td>Stipendio netto target</td><td class="num"></td><td class="num">${euro2(stipendio_target)}</td></tr>`;
   html += `<tr><td>&nbsp;&nbsp;di cui necessario LORDO (ante imposte, aliquota ${n1(aliquota_fiscale)}%)</td><td class="num"></td><td class="num">${euro2(stipendio_lordo_necessario)}</td></tr>`;
   html += `<tr><td>Ammortamento investimento (${n1(vita_utile_anni)} anni)${includi_ammortamento ? '' : ' — non incluso nel totale sotto'}</td><td class="num"></td><td class="num">${euro2(ammortamento_mensile)}</td></tr>`;
@@ -427,6 +776,13 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
     html += `<tr><td>Ore in più di servizi esterni a settimana</td><td class="num">${ore_extra_servizi_sett !== null ? n1(ore_extra_servizi_sett) + ' ore/sett in più' : 'n/d (dati insufficienti)'}</td></tr>`;
     html += '</table>';
   }
+
+  html += '<h3 class="sub">Scenario prudente</h3>';
+  html += `<p>Confronto tra lo scenario "base" (i valori che avete inserito) e uno scenario prudente in cui i ricavi variabili sono ridotti del ${n1(buffer_ricavi_prudente_perc)}% (le entrate fisse già esistenti restano invariate).</p>`;
+  html += '<table><tr><th>Scenario</th><th class="num">Ricavi totali</th><th class="num">Fabbisogno mensile</th><th class="num">Differenza</th><th>Esito</th></tr>';
+  html += `<tr><td>Base</td><td class="num">${euro2(ricavo_totale_stimato)}</td><td class="num">${euro2(fabbisogno_mensile)}</td><td class="num">${euro2(differenza)}</td><td>${piano_regge ? '✅' : '⚠️'}</td></tr>`;
+  html += `<tr><td>Prudente (−${n1(buffer_ricavi_prudente_perc)}%)</td><td class="num">${euro2(ricavi_prudenti)}</td><td class="num">${euro2(fabbisogno_prudente)}</td><td class="num">${euro2(differenza_prudente)}</td><td>${differenza_prudente >= 0 ? '✅' : '⚠️'}</td></tr>`;
+  html += '</table>';
 
   html += '<h3 class="sub">Tempo</h3>';
   html += '<table>';
@@ -450,6 +806,18 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   html += `<tr><td>Rata mensile stimata del prestito (${n1(tasso_prestito)}%, ${n1(durata_prestito)} anni)</td><td class="num">${euro2(rata_mutuo_mensile)}</td></tr>`;
   html += '</table>';
   html += '<p class="nota">Nota: il bando MiC rimborsa a saldo (in gran parte), non anticipa. Il "capitale necessario subito" è quindi la cifra reale da reperire prima di aprire, anche come prestito/microcredito, indipendentemente dal contributo che arriverà dopo.</p>';
+
+  html += '<h3 class="sub">Proiezione liquidità nei primi 18 mesi</h3>';
+  html += `<p>Simula come si muove la cassa dell'attività durante la crescita graduale verso il regime (Step 5), a partire da una cassa iniziale di ${euro(cash_start)} dopo l'apertura. <strong>Non</strong> include il prelievo dello stipendio personale di Federica: mostra solo se l'attività si autosostiene con le sue uscite correnti — se vivete anche dei ricavi del negozio fin da subito, la cassa reale scenderà più velocemente di quanto mostrato qui.</p>`;
+  html += '<table><tr><th>Mese</th><th class="num">% del regime</th><th class="num">Ricavi del mese</th><th class="num">Costi del mese</th><th class="num">Cassa cumulata</th></tr>';
+  proiezione.forEach(function(p){
+    const cls = p.cassa >= 0 ? 'cassa-ok' : 'cassa-no';
+    html += `<tr><td>Mese ${p.m}</td><td class="num">${Math.round(p.frazione*100)}%</td><td class="num">${euro(p.ricavi_m)}</td><td class="num">${euro(p.costi_m)}</td><td class="num ${cls}">${euro(p.cassa)}</td></tr>`;
+  });
+  html += '</table>';
+  html += '<p>' + (cassaMin < 0
+    ? `⚠️ Nella proiezione la cassa scende sotto zero: il punto più basso è <strong>${euro(cassaMin)}</strong> al mese ${meseCassaMin}. Servirebbe più liquidità iniziale, un prestito più alto, oppure una rampa di crescita più veloce.`
+    : `✅ Nella proiezione la cassa non scende mai sotto zero: il punto più basso è ${euro(cassaMin)} al mese ${meseCassaMin || 0}.`) + '</p>';
 
   div.innerHTML = html;
   div.scrollIntoView({behavior:'smooth', block:'start'});
