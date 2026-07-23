@@ -59,10 +59,33 @@
   }
   .verdetto.ok{background:#E5F0E6; color:#3A5C3D;}
   .verdetto.no{background:#F3E3E7; color:#7A3040;}
-  table{width:100%; border-collapse:collapse; margin:10px 0 20px; display:block; overflow-x:auto;}
+  table{width:100%; border-collapse:collapse; margin:10px 0 20px;}
   td, th{padding:6px 8px; border-bottom:1px solid var(--bordo); font-size:0.93rem; text-align:left;}
   th{background:#F2EEE6;}
   .num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  /* Sotto i 640px le tabelle diventano schede verticali: niente scorrimento orizzontale.
+     Ogni cella mostra come etichetta l'intestazione di colonna corrispondente (data-label,
+     assegnato via JS in base alla posizione — vedi applyResponsiveLabels). */
+  @media (max-width: 640px){
+    table{display:block;}
+    table tr:first-child{display:none;}
+    table tr{
+      display:block; margin-bottom:10px; border:1px solid var(--bordo);
+      border-radius:6px; padding:2px 10px; background:#fff;
+    }
+    table tr.sezione-titolo{background:#F2EEE6;}
+    table td{
+      display:flex; justify-content:space-between; align-items:baseline; gap:14px;
+      border-bottom:1px dashed var(--bordo); padding:7px 0; text-align:left;
+      white-space:normal;
+    }
+    table td:last-child{border-bottom:none;}
+    table td::before{
+      content:attr(data-label); font-weight:600; color:#666; font-size:0.78rem;
+      flex:0 0 auto; padding-right:8px;
+    }
+    table td:not([data-label])::before{content:none;}
+  }
   .nota{font-size:0.85rem; color:#666; margin-top:20px; border-top:1px dashed var(--bordo); padding-top:12px;}
   .sezione-titolo{font-weight:bold; background:#F2EEE6;}
   h3.sub{background:none;color:inherit;padding:0;margin-top:28px;font-size:1.05rem;border-top:1px solid var(--bordo);padding-top:18px;}
@@ -534,6 +557,21 @@ function euro(n) { return Math.round(n).toLocaleString('it-IT') + ' €'; }
 function euro2(n) { return n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €'; }
 function n1(n) { return n.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1}); }
 
+// Assegna a ogni <td> di ogni tabella un data-label preso dal <th> della sua colonna,
+// così sotto i 640px (vedi CSS) le tabelle diventano schede leggibili senza scorrimento
+// orizzontale, senza dover scrivere data-label a mano in ogni riga generata sopra.
+function applyResponsiveLabels(container) {
+  container.querySelectorAll('table').forEach(function(table){
+    const headerCells = table.querySelector('tr') ? Array.from(table.querySelector('tr').children) : [];
+    const headers = headerCells.map(function(cell){ return cell.textContent.trim(); });
+    Array.from(table.rows).slice(1).forEach(function(row){
+      Array.from(row.cells).forEach(function(cell, i){
+        if (headers[i]) cell.setAttribute('data-label', headers[i]);
+      });
+    });
+  });
+}
+
 const WEEKS = 4.33;
 
 document.getElementById('formFattibilita').addEventListener('submit', function(e){
@@ -959,7 +997,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   html += `<p class="nota">Costo part-time totale incluso nel conto economico (continuativo + copertura assenze): <strong>${euro2(costo_parttime_mens)}/mese</strong>, calcolato a ${n1(costo_orario_parttime)}€/ora.</p>`;
 
   html += '<h3 class="sub">Capitale iniziale</h3>';
-  html += '<table>';
+  html += '<table><tr><th>Voce</th><th class="num">Importo</th></tr>';
   html += `<tr><td>Totale spese di avviamento (con imprevisti)</td><td class="num">${euro(totale_avviamento)}</td></tr>`;
   html += `<tr><td>Spese ammissibili dal bando (stima)</td><td class="num">${euro(spese_ammissibili_bando)}</td></tr>`;
   html += `<tr><td>Contributo bando atteso (tetto 24.000 €)</td><td class="num">${euro(contributo_bando_atteso)}</td></tr>`;
@@ -975,7 +1013,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   html += '<p>' + (perc_capacita_usata > 100
     ? '⚠️ Il primo assortimento sembra superare lo spazio disponibile: valuta scaffalature più dense, un locale più grande, o uno stock iniziale più contenuto.'
     : (perc_capacita_usata < 25
-      ? 'ℹ️ Il locale ha spazio ben oltre il primo assortimento di libri: va bene se una parte è dedicata a eventi, prodotti alimentari o oggettistica, altrimenti potreste aumentare lo stock iniziale.'
+      ? 'ℹ️ Il locale ha spazio ben oltre il primo assortimento di libri: va bene se una parte è dedicata a eventi, prodotti alimentari o oggettistica, altrimenti potresti aumentare lo stock iniziale.'
       : '✅ Il primo assortimento sembra stare comodamente nello spazio disponibile.')) + '</p>';
 
   html += '<h3 class="sub">Proiezione liquidità nei primi 18 mesi</h3>';
@@ -991,6 +1029,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
     : `✅ Nella proiezione la cassa non scende mai sotto zero: il punto più basso è ${euro(cassaMin)} al mese ${meseCassaMin || 0}.`) + '</p>';
 
   div.innerHTML = html;
+  applyResponsiveLabels(div);
   div.scrollIntoView({behavior:'smooth', block:'start'});
 });
 </script>

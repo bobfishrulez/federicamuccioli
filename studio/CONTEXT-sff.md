@@ -123,6 +123,18 @@ salvataggio, nessun reload, nessun invio dati altrove).
   "morbide"), non a part-time/POS/rata prestito, che sono già importi precisi.
 - Ogni campo ha un `<div class="help">` — se aggiungi un campo nuovo,
   aggiungine uno anche per lui: è la convenzione di leggibilità del file.
+- **Tabelle responsive senza scorrimento orizzontale**: sotto i 640px (media
+  query in CSS) ogni `<tr>` diventa una scheda verticale e ogni `<td>` mostra
+  come etichetta il testo del `<th>` della sua colonna, tramite l'attributo
+  `data-label` (assegnato via JS, non scritto a mano nell'HTML). La funzione
+  `applyResponsiveLabels()`, chiamata subito dopo `div.innerHTML = html`,
+  legge la prima `<tr>` di ogni tabella come intestazione e assegna
+  `data-label` a tutte le celle delle righe successive in base alla
+  posizione di colonna. **Perché funzioni ogni tabella deve avere una vera
+  riga di intestazione con `<th>`** e ogni riga dati deve avere lo stesso
+  numero di celle della riga di intestazione (anche se una cella è vuota,
+  va comunque inclusa come `<td></td>` per non sfalsare l'allineamento).
+  Se aggiungi una nuova tabella nei risultati, ricordati la riga `<th>`.
 - **Il ricavo libri non è un input, è un output**: non ci sono più i campi
   "persone al giorno" / "% che compra" — quel traffico-based estimate era
   ingannevole (per una libreria che deve ancora aprire non è dato reale, solo
@@ -202,9 +214,6 @@ salvataggio, nessun reload, nessun invio dati altrove).
 
 ## Possibili prossimi step
 - Aggiungere un pulsante "esporta risultati in PDF/CSV"
-- Rendere responsive la tabella su mobile (le tabelle hanno già
-  `overflow-x:auto`, ma con molte colonne — es. proiezione liquidità — su
-  schermi stretti resta comunque da scorrere orizzontalmente)
 - Verificare con fonti ufficiali (bando MiC, commercialista, CCNL Commercio)
   le voci segnalate come "da verificare" sopra, prima di usare lo strumento
   per una domanda di bando reale
