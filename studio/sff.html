@@ -59,40 +59,25 @@
   }
   .verdetto.ok{background:#E5F0E6; color:#3A5C3D;}
   .verdetto.no{background:#F3E3E7; color:#7A3040;}
-  table{width:100%; border-collapse:collapse; margin:10px 0 20px;}
-  td, th{padding:6px 8px; border-bottom:1px solid var(--bordo); font-size:0.93rem; text-align:left;}
-  th{background:#F2EEE6;}
-  .num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
-  /* Sotto i 640px le tabelle diventano schede verticali: niente scorrimento orizzontale.
-     Ogni cella mostra come etichetta l'intestazione di colonna corrispondente (data-label,
-     assegnato via JS in base alla posizione — vedi applyResponsiveLabels). */
-  @media (max-width: 640px){
-    table{display:block;}
-    table tr:first-child{display:none;}
-    table tr{
-      display:block; margin-bottom:10px; border:1px solid var(--bordo);
-      border-radius:6px; padding:2px 10px; background:#fff;
-    }
-    table tr.sezione-titolo{background:#F2EEE6;}
-    table td{
-      display:flex; justify-content:space-between; align-items:baseline; gap:14px;
-      border-bottom:1px dashed var(--bordo); padding:7px 0; text-align:left;
-      white-space:normal;
-    }
-    table td:last-child{border-bottom:none;}
-    table td::before{
-      content:attr(data-label); font-weight:600; color:#666; font-size:0.78rem;
-      flex:0 0 auto; padding-right:8px;
-    }
-    table td:not([data-label])::before{content:none;}
-  }
+  /* Risultati come card, non tabelle: nessuna colonna larga, niente scorrimento
+     orizzontale a nessuna larghezza di schermo. Ogni "riga" è un blocco; i valori
+     al suo interno vanno a capo liberamente (flex-wrap) invece di essere allineati
+     in colonne fisse. */
+  .tabella{margin:10px 0 20px; display:flex; flex-direction:column; gap:8px;}
+  .riga{border:1px solid var(--bordo); border-radius:8px; padding:10px 14px; background:#fff;}
+  .riga.sezione-titolo{background:#F2EEE6; border-color:var(--arancio);}
+  .riga-titolo{font-weight:600; margin-bottom:2px;}
+  .riga.sezione-titolo .riga-titolo{font-weight:700;}
+  .riga.riga-sub .riga-titolo{font-weight:500; color:#666; font-size:0.9rem;}
+  .riga-celle{display:flex; flex-wrap:wrap; gap:2px 22px; margin-top:2px;}
+  .cella{display:flex; gap:6px; align-items:baseline; font-size:0.9rem; max-width:100%;}
+  .cella .etichetta{color:#888; font-size:0.76rem; flex:0 0 auto;}
+  .cella .valore{font-variant-numeric:tabular-nums; font-weight:600; word-break:break-word;}
   .nota{font-size:0.85rem; color:#666; margin-top:20px; border-top:1px dashed var(--bordo); padding-top:12px;}
-  .sezione-titolo{font-weight:bold; background:#F2EEE6;}
   h3.sub{background:none;color:inherit;padding:0;margin-top:28px;font-size:1.05rem;border-top:1px solid var(--bordo);padding-top:18px;}
   h3.sub:first-of-type{border-top:none;margin-top:0;padding-top:0;}
-  .cassa-ok{color:#3A5C3D; font-weight:600;}
-  .cassa-no{color:#7A3040; font-weight:600;}
-  .riga-sub{color:#666;font-size:0.9rem;}
+  .cassa-ok{color:#3A5C3D;}
+  .cassa-no{color:#7A3040;}
 </style>
 </head>
 <body>
@@ -557,19 +542,32 @@ function euro(n) { return Math.round(n).toLocaleString('it-IT') + ' €'; }
 function euro2(n) { return n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €'; }
 function n1(n) { return n.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1}); }
 
-// Assegna a ogni <td> di ogni tabella un data-label preso dal <th> della sua colonna,
-// così sotto i 640px (vedi CSS) le tabelle diventano schede leggibili senza scorrimento
-// orizzontale, senza dover scrivere data-label a mano in ogni riga generata sopra.
-function applyResponsiveLabels(container) {
-  container.querySelectorAll('table').forEach(function(table){
-    const headerCells = table.querySelector('tr') ? Array.from(table.querySelector('tr').children) : [];
-    const headers = headerCells.map(function(cell){ return cell.textContent.trim(); });
-    Array.from(table.rows).slice(1).forEach(function(row){
-      Array.from(row.cells).forEach(function(cell, i){
-        if (headers[i]) cell.setAttribute('data-label', headers[i]);
-      });
-    });
+// Costruisce un blocco risultati come lista di "card" invece che una tabella HTML,
+// così non c'è mai una colonna larga che costringe a scorrere in orizzontale su mobile.
+// headers: nomi delle colonne dopo la prima (usati come etichetta prima del valore).
+// righe: array di { cls: 'sezione-titolo'|'riga-sub'|'', c: [titolo, val1, val2, ...] }.
+// Un valore può essere una stringa/numero oppure { v: '...', cls: 'cassa-ok' } per una
+// classe aggiuntiva sul valore (es. verde/rosso per la cassa). Le celle vuote ('', null,
+// undefined) vengono omesse invece di lasciare uno spazio vuoto come in una tabella.
+function tabella(headers, righe) {
+  let html = '<div class="tabella">';
+  righe.forEach(function(r){
+    html += `<div class="riga${r.cls ? ' ' + r.cls : ''}">`;
+    html += `<div class="riga-titolo">${r.c[0]}</div>`;
+    const celleHtml = [];
+    for (let i = 1; i < r.c.length; i++) {
+      let v = r.c[i];
+      if (v === '' || v === null || typeof v === 'undefined') continue;
+      let cls = 'valore';
+      if (v && typeof v === 'object') { cls += ' ' + v.cls; v = v.v; }
+      const etichetta = headers[i] ? `<span class="etichetta">${headers[i]}</span>` : '';
+      celleHtml.push(`<span class="cella">${etichetta}<span class="${cls}">${v}</span></span>`);
+    }
+    if (celleHtml.length) html += `<div class="riga-celle">${celleHtml.join('')}</div>`;
+    html += '</div>';
   });
+  html += '</div>';
+  return html;
 }
 
 const WEEKS = 4.33;
@@ -935,60 +933,60 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
 
   html += `<p>Obiettivo: portare a casa <strong>${euro(reddito_netto_annuo_target)} netti all'anno</strong> (media ${euro2(reddito_netto_annuo_target/12)}/mese) — il conto economico sotto usa la media mensile.</p>`;
 
-  html += '<table><tr><th>Voce</th><th class="num">Quantità</th><th class="num">Mensile</th></tr>';
-  html += `<tr><td>Ricavo libri necessario per il pareggio</td><td class="num">${n1(libri_pareggio_giorno)} libri/giorno (~${n1(libri_pareggio_mese)}/mese)</td><td class="num">${euro2(ricavo_libri_mese_target)}</td></tr>`;
-  html += `<tr><td>Ricavo eventi in libreria</td><td class="num">${n1(eventi_libreria_mese)} eventi/mese, ${n1(partecipanti_eventi_libreria_mese)} partecipanti attesi (${n1(tasso_riempimento_evento_libreria)}% di ${n1(capienza_evento_libreria)})</td><td class="num">${euro2(ricavo_eventi_libreria_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo prodotti alimentari</td><td class="num">${n1(prodotti_al_giorno)}/giorno (~${n1(prodotti_mese_stimati)}/mese)</td><td class="num">${euro2(ricavo_prodotti_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo abbonamenti book club</td><td class="num">${n1(numero_abbonati)} abbonati</td><td class="num">${euro2(ricavo_abbonamenti_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo workshop</td><td class="num">${n1(workshop_al_mese)}/mese, ${n1(partecipanti_workshop_mese)} partecipanti attesi (${n1(tasso_riempimento_workshop)}% di ${n1(capienza_workshop)})</td><td class="num">${euro2(ricavo_workshop_mese)}</td></tr>`;
-  html += `<tr><td>Ricavo oggettistica</td><td class="num">${n1(oggetti_al_mese)} pezzi/mese</td><td class="num">${euro2(ricavo_oggetti_mese)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;di cui eventi per terzi</td><td class="num">${n1(eventi_terzi_mese)} eventi/mese, ${n1(partecipanti_eventi_terzi_mese)} partecipanti attesi (${n1(tasso_riempimento_evento_terzi)}% di ${n1(capienza_evento_terzi)})</td><td class="num">${euro2(ricavo_eventi_terzi_mese)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;di cui servizi orari (storytelling, ecc.)</td><td class="num">${n1(ore_servizi_mese_stimate)} ore/mese</td><td class="num">${euro2(ricavo_servizi_mese)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;di cui tempo commerciale (ricerca clienti, non fatturato)</td><td class="num">${n1(ore_commerciale_mese_stimate)} ore/mese</td><td class="num">—</td></tr>`;
-  html += `<tr><td>Ricavo servizi per terzi (esterni)</td><td class="num"></td><td class="num">${euro2(ricavo_eventi_terzi_mese + ricavo_servizi_mese)}</td></tr>`;
-  html += `<tr><td>Entrate fisse già esistenti</td><td class="num">—</td><td class="num">${euro2(entrate_fisse_esistenti)}</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>TOTALE RICAVI STIMATI</td><td class="num"></td><td class="num">${euro2(ricavo_totale_stimato)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;Costi fissi "base" (utenze, INPS, TARI, manutenzione, ecc.)</td><td class="num"></td><td class="num">${euro2(cf_sola)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Buffer imprevisti (${n1(buffer_costi_fissi_perc)}%)</td><td class="num"></td><td class="num">${euro2(buffer_costi_fissi_importo)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Part-time (continuativo + copertura assenze)</td><td class="num"></td><td class="num">${euro2(costo_parttime_mens)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Commissioni POS</td><td class="num"></td><td class="num">${euro2(commissione_pos_mensile)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Rata prestito</td><td class="num"></td><td class="num">${euro2(rata_mutuo_mensile)}</td></tr>`;
-  html += `<tr><td>Costi fissi mensili totali</td><td class="num"></td><td class="num">${euro2(cf_scelto)}</td></tr>`;
-  html += `<tr><td>Reddito netto target, media mensile</td><td class="num"></td><td class="num">${euro2(reddito_netto_annuo_target/12)}</td></tr>`;
-  html += `<tr><td>&nbsp;&nbsp;di cui necessario LORDO (ante imposte, aliquota ${n1(aliquota_fiscale)}%)</td><td class="num"></td><td class="num">${euro2(stipendio_lordo_necessario)}</td></tr>`;
-  html += `<tr><td>Ammortamento investimento (${n1(vita_utile_anni)} anni)${includi_ammortamento ? '' : ' — non incluso nel totale sotto'}</td><td class="num"></td><td class="num">${euro2(ammortamento_mensile)}</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>FABBISOGNO MENSILE TOTALE (pareggio)</td><td class="num"></td><td class="num">${euro2(fabbisogno_mensile)}</td></tr>`;
-  html += `<tr><td class="riga-sub">&nbsp;&nbsp;+ Accantonamento per la crescita (${n1(perc_utile_crescita)}%)</td><td class="num"></td><td class="num">${euro2(fondo_crescita_mensile)}</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>FABBISOGNO MENSILE CON UTILE DI CRESCITA</td><td class="num"></td><td class="num">${euro2(fabbisogno_con_crescita)}</td></tr>`;
-  html += '</table>';
+  html += tabella(['Voce', 'Quantità', 'Mensile'], [
+    { c: ['Ricavo libri necessario per il pareggio', `${n1(libri_pareggio_giorno)} libri/giorno (~${n1(libri_pareggio_mese)}/mese)`, euro2(ricavo_libri_mese_target)] },
+    { c: ['Ricavo eventi in libreria', `${n1(eventi_libreria_mese)} eventi/mese, ${n1(partecipanti_eventi_libreria_mese)} partecipanti attesi (${n1(tasso_riempimento_evento_libreria)}% di ${n1(capienza_evento_libreria)})`, euro2(ricavo_eventi_libreria_mese)] },
+    { c: ['Ricavo prodotti alimentari', `${n1(prodotti_al_giorno)}/giorno (~${n1(prodotti_mese_stimati)}/mese)`, euro2(ricavo_prodotti_mese)] },
+    { c: ['Ricavo abbonamenti book club', `${n1(numero_abbonati)} abbonati`, euro2(ricavo_abbonamenti_mese)] },
+    { c: ['Ricavo workshop', `${n1(workshop_al_mese)}/mese, ${n1(partecipanti_workshop_mese)} partecipanti attesi (${n1(tasso_riempimento_workshop)}% di ${n1(capienza_workshop)})`, euro2(ricavo_workshop_mese)] },
+    { c: ['Ricavo oggettistica', `${n1(oggetti_al_mese)} pezzi/mese`, euro2(ricavo_oggetti_mese)] },
+    { cls: 'riga-sub', c: ['di cui eventi per terzi', `${n1(eventi_terzi_mese)} eventi/mese, ${n1(partecipanti_eventi_terzi_mese)} partecipanti attesi (${n1(tasso_riempimento_evento_terzi)}% di ${n1(capienza_evento_terzi)})`, euro2(ricavo_eventi_terzi_mese)] },
+    { cls: 'riga-sub', c: ['di cui servizi orari (storytelling, ecc.)', `${n1(ore_servizi_mese_stimate)} ore/mese`, euro2(ricavo_servizi_mese)] },
+    { cls: 'riga-sub', c: ['di cui tempo commerciale (ricerca clienti, non fatturato)', `${n1(ore_commerciale_mese_stimate)} ore/mese`, '—'] },
+    { c: ['Ricavo servizi per terzi (esterni)', '', euro2(ricavo_eventi_terzi_mese + ricavo_servizi_mese)] },
+    { c: ['Entrate fisse già esistenti', '—', euro2(entrate_fisse_esistenti)] },
+    { cls: 'sezione-titolo', c: ['TOTALE RICAVI STIMATI', '', euro2(ricavo_totale_stimato)] },
+    { cls: 'riga-sub', c: ['Costi fissi "base" (utenze, INPS, TARI, manutenzione, ecc.)', '', euro2(cf_sola)] },
+    { cls: 'riga-sub', c: [`+ Buffer imprevisti (${n1(buffer_costi_fissi_perc)}%)`, '', euro2(buffer_costi_fissi_importo)] },
+    { cls: 'riga-sub', c: ['+ Part-time (continuativo + copertura assenze)', '', euro2(costo_parttime_mens)] },
+    { cls: 'riga-sub', c: ['+ Commissioni POS', '', euro2(commissione_pos_mensile)] },
+    { cls: 'riga-sub', c: ['+ Rata prestito', '', euro2(rata_mutuo_mensile)] },
+    { c: ['Costi fissi mensili totali', '', euro2(cf_scelto)] },
+    { c: ['Reddito netto target, media mensile', '', euro2(reddito_netto_annuo_target/12)] },
+    { c: [`di cui necessario LORDO (ante imposte, aliquota ${n1(aliquota_fiscale)}%)`, '', euro2(stipendio_lordo_necessario)] },
+    { c: [`Ammortamento investimento (${n1(vita_utile_anni)} anni)${includi_ammortamento ? '' : ' — non incluso nel totale sotto'}`, '', euro2(ammortamento_mensile)] },
+    { cls: 'sezione-titolo', c: ['FABBISOGNO MENSILE TOTALE (pareggio)', '', euro2(fabbisogno_mensile)] },
+    { cls: 'riga-sub', c: [`+ Accantonamento per la crescita (${n1(perc_utile_crescita)}%)`, '', euro2(fondo_crescita_mensile)] },
+    { cls: 'sezione-titolo', c: ['FABBISOGNO MENSILE CON UTILE DI CRESCITA', '', euro2(fabbisogno_con_crescita)] }
+  ]);
 
   if (libri_pareggio_giorno > 0) {
     html += '<p><strong>In alternativa a vendere libri, una di queste due leve (o una combinazione) dovrebbe bastare da sola a coprire lo stesso importo:</strong></p>';
-    html += '<table><tr><th>Leva</th><th class="num">Quanto in più serve</th></tr>';
-    html += `<tr><td>Eventi in libreria in più al mese</td><td class="num">${eventi_extra_mese !== null ? n1(eventi_extra_mese) + ' eventi/mese in più' : 'n/d (dati insufficienti)'}</td></tr>`;
-    html += `<tr><td>Ore in più di servizi esterni a settimana</td><td class="num">${ore_extra_servizi_sett !== null ? n1(ore_extra_servizi_sett) + ' ore/sett in più' : 'n/d (dati insufficienti)'}</td></tr>`;
-    html += '</table>';
+    html += tabella(['Leva', 'Quanto in più serve'], [
+      { c: ['Eventi in libreria in più al mese', eventi_extra_mese !== null ? n1(eventi_extra_mese) + ' eventi/mese in più' : 'n/d (dati insufficienti)'] },
+      { c: ['Ore in più di servizi esterni a settimana', ore_extra_servizi_sett !== null ? n1(ore_extra_servizi_sett) + ' ore/sett in più' : 'n/d (dati insufficienti)'] }
+    ]);
   }
 
   html += '<h3 class="sub">Scenario prudente</h3>';
   html += `<p>Confronto tra lo scenario "base" (i valori che hai inserito) e uno scenario prudente in cui i ricavi variabili sono ridotti del ${n1(buffer_ricavi_prudente_perc)}% (le entrate fisse già esistenti restano invariate).</p>`;
-  html += '<table><tr><th>Scenario</th><th class="num">Ricavi totali</th><th class="num">Fabbisogno mensile</th><th class="num">Differenza</th><th>Esito</th></tr>';
-  html += `<tr><td>Base</td><td class="num">${euro2(ricavo_totale_stimato)}</td><td class="num">${euro2(fabbisogno_mensile)}</td><td class="num">${euro2(differenza)}</td><td>${piano_regge ? '✅' : '⚠️'}</td></tr>`;
-  html += `<tr><td>Prudente (−${n1(buffer_ricavi_prudente_perc)}%)</td><td class="num">${euro2(ricavi_prudenti)}</td><td class="num">${euro2(fabbisogno_prudente)}</td><td class="num">${euro2(differenza_prudente)}</td><td>${differenza_prudente >= 0 ? '✅' : '⚠️'}</td></tr>`;
-  html += '</table>';
+  html += tabella(['Scenario', 'Ricavi totali', 'Fabbisogno mensile', 'Differenza', 'Esito'], [
+    { c: ['Base', euro2(ricavo_totale_stimato), euro2(fabbisogno_mensile), euro2(differenza), piano_regge ? '✅' : '⚠️'] },
+    { c: [`Prudente (−${n1(buffer_ricavi_prudente_perc)}%)`, euro2(ricavi_prudenti), euro2(fabbisogno_prudente), euro2(differenza_prudente), differenza_prudente >= 0 ? '✅' : '⚠️'] }
+  ]);
 
   html += '<h3 class="sub">Tempo</h3>';
   html += `<p>Amministrazione + organizzazione eventi in libreria: ${n1(ore_assorbibili_sett)} h/settimana richieste, ${n1(tempo_morto_disponibile_sett)} h di tempo morto al banco disponibili → ${n1(ore_assorbite_sett)} h assorbite senza costo aggiuntivo, ${n1(ore_assorbibili_eccedenti_sett)} h restano da coprire con tempo dedicato.</p>`;
-  html += '<table><tr><th>Voce</th><th class="num">Ore/settimana</th></tr>';
-  html += `<tr><td>Apertura al banco (vendita)</td><td class="num">${n1(ore_vendita_sett)} h</td></tr>`;
-  html += `<tr><td>Amministrazione + organizzazione eventi in libreria, eccedente il tempo morto</td><td class="num">${n1(ore_assorbibili_eccedenti_sett)} h</td></tr>`;
-  html += `<tr><td>Svolgimento eventi in libreria (allestimento + evento + disallestimento)</td><td class="num">${n1(ore_svolgimento_evento_libreria_sett)} h</td></tr>`;
-  html += `<tr><td>Eventi per terzi (organizzazione + svolgimento)</td><td class="num">${n1(ore_eventi_terzi_totali_sett)} h</td></tr>`;
-  html += `<tr><td>Servizi esterni (parte pratica + parte commerciale)</td><td class="num">${n1(ore_servizi_esterni + ore_commerciale_terzi)} h</td></tr>`;
-  html += `<tr><td>Mantenimento entrate fisse già esistenti</td><td class="num">${n1(ore_entrate_fisse_sett)} h</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>TOTALE ore/settimana da coprire</td><td class="num">${n1(ore_totali_sett)} h</td></tr>`;
-  html += `<tr><td>Ore/settimana massime disponibili senza part-time</td><td class="num">${n1(ore_max_titolare_sett)} h</td></tr>`;
-  html += '</table>';
+  html += tabella(['Voce', 'Ore/settimana'], [
+    { c: ['Apertura al banco (vendita)', `${n1(ore_vendita_sett)} h`] },
+    { c: ['Amministrazione + organizzazione eventi in libreria, eccedente il tempo morto', `${n1(ore_assorbibili_eccedenti_sett)} h`] },
+    { c: ['Svolgimento eventi in libreria (allestimento + evento + disallestimento)', `${n1(ore_svolgimento_evento_libreria_sett)} h`] },
+    { c: ['Eventi per terzi (organizzazione + svolgimento)', `${n1(ore_eventi_terzi_totali_sett)} h`] },
+    { c: ['Servizi esterni (parte pratica + parte commerciale)', `${n1(ore_servizi_esterni + ore_commerciale_terzi)} h`] },
+    { c: ['Mantenimento entrate fisse già esistenti', `${n1(ore_entrate_fisse_sett)} h`] },
+    { cls: 'sezione-titolo', c: ['TOTALE ore/settimana da coprire', `${n1(ore_totali_sett)} h`] },
+    { c: ['Ore/settimana massime disponibili senza part-time', `${n1(ore_max_titolare_sett)} h`] }
+  ]);
 
   html += '<p>' + (tempo_sostenibile
     ? `✅ Con ${n1(ore_totali_sett)} h/settimana necessarie, entro il limite di ${n1(ore_max_titolare_sett)} h impostato, puoi gestire tutto da sola nelle settimane normali — non serve un part-time continuativo.`
@@ -997,16 +995,16 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   html += `<p class="nota">Costo part-time totale incluso nel conto economico (continuativo + copertura assenze): <strong>${euro2(costo_parttime_mens)}/mese</strong>, calcolato a ${n1(costo_orario_parttime)}€/ora.</p>`;
 
   html += '<h3 class="sub">Capitale iniziale</h3>';
-  html += '<table><tr><th>Voce</th><th class="num">Importo</th></tr>';
-  html += `<tr><td>Totale spese di avviamento (con imprevisti)</td><td class="num">${euro(totale_avviamento)}</td></tr>`;
-  html += `<tr><td>Spese ammissibili dal bando (stima)</td><td class="num">${euro(spese_ammissibili_bando)}</td></tr>`;
-  html += `<tr><td>Contributo bando atteso (tetto 24.000 €)</td><td class="num">${euro(contributo_bando_atteso)}</td></tr>`;
-  html += `<tr><td>Anticipo ottenibile (se fideiussione attiva)</td><td class="num">${euro(anticipo_ottenibile)}</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>Capitale che serve avere SUBITO</td><td class="num">${euro(capitale_necessario_subito)}</td></tr>`;
-  html += `<tr><td>Liquidità propria disponibile</td><td class="num">${euro(liquidita_disponibile)}</td></tr>`;
-  html += `<tr class="sezione-titolo"><td>${gap_liquidita > 0 ? 'MANCANO (da prestito/mutuo)' : 'AVANZO rispetto al necessario'}</td><td class="num">${euro(Math.abs(gap_liquidita))}</td></tr>`;
-  html += `<tr><td>Rata mensile stimata del prestito (${n1(tasso_prestito)}%, ${n1(durata_prestito)} anni)</td><td class="num">${euro2(rata_mutuo_mensile)}</td></tr>`;
-  html += '</table>';
+  html += tabella(['Voce', 'Importo'], [
+    { c: ['Totale spese di avviamento (con imprevisti)', euro(totale_avviamento)] },
+    { c: ['Spese ammissibili dal bando (stima)', euro(spese_ammissibili_bando)] },
+    { c: ['Contributo bando atteso (tetto 24.000 €)', euro(contributo_bando_atteso)] },
+    { c: ['Anticipo ottenibile (se fideiussione attiva)', euro(anticipo_ottenibile)] },
+    { cls: 'sezione-titolo', c: ['Capitale che serve avere SUBITO', euro(capitale_necessario_subito)] },
+    { c: ['Liquidità propria disponibile', euro(liquidita_disponibile)] },
+    { cls: 'sezione-titolo', c: [gap_liquidita > 0 ? 'MANCANO (da prestito/mutuo)' : 'AVANZO rispetto al necessario', euro(Math.abs(gap_liquidita))] },
+    { c: [`Rata mensile stimata del prestito (${n1(tasso_prestito)}%, ${n1(durata_prestito)} anni)`, euro2(rata_mutuo_mensile)] }
+  ]);
   html += '<p class="nota">Nota: il bando MiC rimborsa a saldo (in gran parte), non anticipa. Il "capitale necessario subito" è quindi la cifra reale da reperire prima di aprire, anche come prestito/microcredito, indipendentemente dal contributo che arriverà dopo.</p>';
 
   html += `<p>Capacità stimata del locale: ${n1(mq_locale)} mq × ${n1(libri_per_mq)} libri/mq ≈ <strong>${Math.round(capacita_libri_stimata).toLocaleString('it-IT')} libri</strong>. Il primo assortimento (${euro(costo_stock_iniziale)}, a un costo di acquisto stimato di ${euro2(costo_acquisto_unitario_libro)}/libro) corrisponde a circa <strong>${Math.round(numero_titoli_stock_stimato).toLocaleString('it-IT')} titoli</strong> — il ${n1(perc_capacita_usata)}% della capacità stimata.</p>`;
@@ -1018,18 +1016,15 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
 
   html += '<h3 class="sub">Proiezione liquidità nei primi 18 mesi</h3>';
   html += `<p>Simula come si muove la cassa dell'attività durante la crescita graduale verso il regime (Step 5), a partire da una cassa iniziale di ${euro(cash_start)} dopo l'apertura. <strong>Non</strong> include il prelievo personale dal conto economico: mostra solo se l'attività si autosostiene con le sue uscite correnti — se vivi anche dei ricavi del negozio fin da subito, la cassa reale scenderà più velocemente di quanto mostrato qui.</p>`;
-  html += '<table><tr><th>Mese</th><th class="num">% del regime</th><th class="num">Ricavi del mese</th><th class="num">Costi del mese</th><th class="num">Cassa cumulata</th></tr>';
-  proiezione.forEach(function(p){
+  html += tabella(['Mese', '% del regime', 'Ricavi del mese', 'Costi del mese', 'Cassa cumulata'], proiezione.map(function(p){
     const cls = p.cassa >= 0 ? 'cassa-ok' : 'cassa-no';
-    html += `<tr><td>Mese ${p.m}</td><td class="num">${Math.round(p.frazione*100)}%</td><td class="num">${euro(p.ricavi_m)}</td><td class="num">${euro(p.costi_m)}</td><td class="num ${cls}">${euro(p.cassa)}</td></tr>`;
-  });
-  html += '</table>';
+    return { c: [`Mese ${p.m}`, `${Math.round(p.frazione*100)}%`, euro(p.ricavi_m), euro(p.costi_m), { v: euro(p.cassa), cls: cls }] };
+  }));
   html += '<p>' + (cassaMin < 0
     ? `⚠️ Nella proiezione la cassa scende sotto zero: il punto più basso è <strong>${euro(cassaMin)}</strong> al mese ${meseCassaMin}. Servirebbe più liquidità iniziale, un prestito più alto, oppure una rampa di crescita più veloce.`
     : `✅ Nella proiezione la cassa non scende mai sotto zero: il punto più basso è ${euro(cassaMin)} al mese ${meseCassaMin || 0}.`) + '</p>';
 
   div.innerHTML = html;
-  applyResponsiveLabels(div);
   div.scrollIntoView({behavior:'smooth', block:'start'});
 });
 </script>

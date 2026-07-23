@@ -123,18 +123,25 @@ salvataggio, nessun reload, nessun invio dati altrove).
   "morbide"), non a part-time/POS/rata prestito, che sono già importi precisi.
 - Ogni campo ha un `<div class="help">` — se aggiungi un campo nuovo,
   aggiungine uno anche per lui: è la convenzione di leggibilità del file.
-- **Tabelle responsive senza scorrimento orizzontale**: sotto i 640px (media
-  query in CSS) ogni `<tr>` diventa una scheda verticale e ogni `<td>` mostra
-  come etichetta il testo del `<th>` della sua colonna, tramite l'attributo
-  `data-label` (assegnato via JS, non scritto a mano nell'HTML). La funzione
-  `applyResponsiveLabels()`, chiamata subito dopo `div.innerHTML = html`,
-  legge la prima `<tr>` di ogni tabella come intestazione e assegna
-  `data-label` a tutte le celle delle righe successive in base alla
-  posizione di colonna. **Perché funzioni ogni tabella deve avere una vera
-  riga di intestazione con `<th>`** e ogni riga dati deve avere lo stesso
-  numero di celle della riga di intestazione (anche se una cella è vuota,
-  va comunque inclusa come `<td></td>` per non sfalsare l'allineamento).
-  Se aggiungi una nuova tabella nei risultati, ricordati la riga `<th>`.
+- **Risultati come card, non tabelle HTML**: niente `<table>`/`<tr>`/`<td>` da
+  nessuna parte nei risultati (prima c'erano, con due tentativi di renderli
+  responsive — scroll orizzontale, poi data-label via JS — entrambi
+  insoddisfacenti su mobile). Ora ogni blocco risultati è costruito con
+  `tabella(headers, righe)`, un helper JS che genera `<div class="riga">`
+  (una card per riga) contenenti `<div class="riga-celle">` con coppie
+  etichetta/valore che vanno a capo liberamente (flexbox + wrap) — non c'è
+  mai una colonna a larghezza fissa, quindi non c'è mai bisogno di scorrere
+  in orizzontale, a nessuna dimensione di schermo.
+  Firma: `tabella(headers, righe)` dove `headers` sono i nomi delle colonne
+  dopo la prima (la prima cella di ogni riga è sempre il "titolo" della
+  card, senza etichetta) e `righe` è un array di `{ cls, c }` con `cls`
+  opzionale (`'sezione-titolo'` o `'riga-sub'`, stessi nomi di classe di
+  prima) e `c` l'array dei valori di colonna, titolo compreso in `c[0]`. Un
+  valore può essere `{ v, cls }` per applicare una classe al singolo valore
+  (es. `cassa-ok`/`cassa-no` nella proiezione di liquidità). Celle vuote
+  (`''`, `null`, `undefined`) vengono omesse invece di occupare spazio.
+  Se aggiungi un nuovo blocco di risultati, usa `tabella()` invece di
+  scrivere HTML di tabella a mano.
 - **Il ricavo libri non è un input, è un output**: non ci sono più i campi
   "persone al giorno" / "% che compra" — quel traffico-based estimate era
   ingannevole (per una libreria che deve ancora aprire non è dato reale, solo
