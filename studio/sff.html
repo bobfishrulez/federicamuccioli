@@ -78,14 +78,38 @@
   h3.sub:first-of-type{border-top:none;margin-top:0;padding-top:0;}
   .cassa-ok{color:#3A5C3D;}
   .cassa-no{color:#7A3040;}
+  .salvataggi-box{background:#fff; border:1px solid var(--bordo); border-radius:8px; padding:14px 16px; margin-bottom:20px;}
+  .salvataggi-titolo{font-weight:600; margin:0 0 8px;}
+  .salvataggio-riga{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-bottom:1px dashed var(--bordo);}
+  .salvataggio-riga:last-child{border-bottom:none;}
+  .salvataggio-riga span{flex:1 1 auto; font-size:0.9rem;}
+  .btn-piccolo{padding:6px 12px; font-size:0.82rem; border-radius:5px; border:1px solid var(--bordo); background:#F2EEE6; cursor:pointer;}
+  .btn-piccolo.btn-elimina{background:#F3E3E7; border-color:var(--rosso); color:var(--rosso);}
+  .salva-box{margin:20px 0; padding:16px; background:#fff; border:1px solid var(--bordo); border-radius:8px;}
+  #tokenBox{margin-top:10px;}
+  #tokenBox input[type=password]{width:100%; max-width:360px; display:block; margin-bottom:8px;}
+  .btn-piccolo.btn-scarica{background:#E5F0E6; border-color:var(--verde); color:#3A5C3D;}
+  #riepilogoDati{display:none;}
+  @media print{
+    .salvataggi-box, form, .salva-box{display:none !important;}
+    #riepilogoDati{display:block;}
+    body{padding:0; max-width:100%;}
+    .riga{break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
 
 <h1>📚 Studio di Fattibilità — Apertura di una Libreria Indipendente</h1>
-<p>Compila i campi con i tuoi dati (sotto ogni campo trovi una spiegazione di cosa inserire e, dove c'è già un valore, perché è stato scelto quel numero). Poi premi <strong>Calcola</strong> e i risultati compaiono qui sopra. I tuoi dati restano privati: nessuno li vede tranne te.</p>
+<p>Compila i campi con i tuoi dati (sotto ogni campo trovi una spiegazione di cosa inserire e, dove c'è già un valore, perché è stato scelto quel numero). Poi premi <strong>Calcola</strong> e i risultati compaiono qui sopra.</p>
+
+<div class="salvataggi-box">
+  <p class="salvataggi-titolo">📂 Salvataggi (massimo 10)</p>
+  <div id="listaSalvataggi"><p class="help">Carico i salvataggi...</p></div>
+</div>
 
 <div id="risultati"></div>
+<div id="riepilogoDati"></div>
 
 <form id="formFattibilita">
 
@@ -524,6 +548,35 @@
 
 <button class="btn" type="submit">Calcola →</button>
 </form>
+
+<div class="salva-box">
+  <button type="button" class="btn" id="btnSalva">💾 Salva questi dati online</button>
+  <button type="button" class="btn-piccolo" id="btnDimentica" style="display:none; margin-left:10px; vertical-align:middle;">Dimentica il token salvato su questo telefono</button>
+  <div id="tokenBox" style="display:none;">
+    <p class="help" id="tokenBoxMsg"></p>
+    <details style="margin-bottom:10px;">
+      <summary style="cursor:pointer; font-size:0.85rem; color:var(--blu);">Cos'è il token? Come lo creo?</summary>
+      <div class="help" style="margin-top:8px;">
+        È una password speciale valida solo per questo repository, così la pagina può salvare senza usare la tua password vera. Per crearne uno:<br>
+        1. Vai su github.com, accedi, poi Impostazioni (foto profilo in alto a destra)<br>
+        2. In fondo al menu a sinistra: "Developer settings"<br>
+        3. "Personal access tokens" → "Fine-grained tokens" → "Generate new token"<br>
+        4. Dai un nome e una scadenza (va bene anche 1 anno)<br>
+        5. In "Repository access" scegli "Only select repositories" e seleziona <strong>federicamuccioli</strong><br>
+        6. In "Permissions" → "Repository permissions", imposta <strong>Contents</strong> su "Read and write"<br>
+        7. "Generate token": copia subito la stringa che inizia con <code>github_pat_...</code>, non verrà mostrata di nuovo<br>
+        Incollala qui sotto. Non condividerla: chi la possiede può scrivere in questo repository (solo questo, non altri).
+      </div>
+    </details>
+    <input type="password" id="githubToken" placeholder="Incolla qui il tuo token GitHub" autocomplete="off">
+    <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; margin:10px 0;">
+      <input type="checkbox" id="ricordaToken" checked>
+      Ricorda questo token su questo telefono (non te lo chiederò più)
+    </label>
+    <button type="button" class="btn" id="btnConferma">Conferma</button>
+  </div>
+  <p id="statoSalvataggio" class="nota" style="display:none; margin-top:12px;"></p>
+</div>
 
 <p class="nota">
 Strumento di stima approssimata a uso personale, non sostituisce il business plan formale né una consulenza di un commercialista.<br>
@@ -1027,6 +1080,283 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   div.innerHTML = html;
   div.scrollIntoView({behavior:'smooth', block:'start'});
 });
+
+// ---------- SALVATAGGI ONLINE (GitHub) ----------
+// Salva/carica/elimina righe di un CSV nel repository pubblico. La lettura (lista, caricamento)
+// non richiede credenziali: il CSV è letto in chiaro da raw.githubusercontent.com. Solo scrivere
+// (salvare, eliminare) richiede un token GitHub incollato dall'utente al momento — non è mai
+// scritto nel codice della pagina, resta solo in questa sessione del browser.
+const GH_OWNER = 'bobfishrulez';
+const GH_REPO = 'federicamuccioli';
+const GH_BRANCH = 'main';
+const GH_PATH = 'studio/salvataggi.csv';
+const MAX_SALVATAGGI = 10;
+
+function idsCampiForm() {
+  return Array.from(document.querySelectorAll('#formFattibilita input, #formFattibilita select'))
+    .map(function(el){ return el.id; })
+    .filter(Boolean);
+}
+
+function csvEscape(v) {
+  v = String(v === null || typeof v === 'undefined' ? '' : v);
+  if (v.indexOf(',') !== -1 || v.indexOf('"') !== -1 || v.indexOf('\n') !== -1) {
+    return '"' + v.replace(/"/g, '""') + '"';
+  }
+  return v;
+}
+function csvParseLine(line) {
+  const out = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else inQuotes = false; }
+      else cur += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { out.push(cur); cur = ''; }
+      else cur += ch;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+function parseCsv(testo) {
+  const righe = testo.split(/\r?\n/).filter(function(r){ return r.trim() !== ''; });
+  if (!righe.length) return { header: [], rows: [] };
+  return { header: csvParseLine(righe[0]), rows: righe.slice(1).map(csvParseLine) };
+}
+function serializeCsv(header, rows) {
+  const linee = [header.map(csvEscape).join(',')];
+  rows.forEach(function(r){ linee.push(r.map(csvEscape).join(',')); });
+  return linee.join('\n') + '\n';
+}
+function base64Encode(str) { return btoa(unescape(encodeURIComponent(str))); }
+function base64Decode(str) { return decodeURIComponent(escape(atob(str.replace(/\n/g, '')))); }
+
+function formattaData(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  return d.toLocaleString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+}
+
+function applicaRiga(header, riga) {
+  header.forEach(function(col, i){
+    if (col === 'timestamp') return;
+    const el = document.getElementById(col);
+    if (el && typeof riga[i] !== 'undefined') el.value = riga[i];
+  });
+}
+
+let ultimaListaHeader = [];
+let ultimaListaRows = [];
+let azionePendente = null; // { tipo: 'salva' } oppure { tipo: 'elimina', timestamp: N }
+
+// Riepilogo leggibile di tutti i dati inseriti nel form (etichetta + valore, per select mostra
+// il testo dell'opzione scelta, non il value grezzo). Usato solo nel PDF stampato: nella pagina
+// resta nascosto (vedi CSS #riepilogoDati), i dati "veri" restano i campi del form.
+function generaRiepilogoDati() {
+  let html = '';
+  document.querySelectorAll('#formFattibilita h2').forEach(function(h2){
+    const fs = h2.nextElementSibling;
+    if (!fs || fs.tagName !== 'FIELDSET') return;
+    let righeHtml = '';
+    fs.querySelectorAll('.campo').forEach(function(campo){
+      const label = campo.querySelector('label');
+      const input = campo.querySelector('input, select');
+      if (!label || !input) return;
+      let valore = input.value;
+      if (input.tagName === 'SELECT' && input.selectedIndex >= 0) {
+        valore = input.options[input.selectedIndex].text;
+      }
+      righeHtml += '<div class="riga"><div class="riga-celle"><span class="cella">'
+        + '<span class="etichetta">' + label.textContent.trim() + '</span>'
+        + '<span class="valore">' + valore + '</span></span></div></div>';
+    });
+    if (righeHtml) html += '<h3 class="sub">' + h2.textContent.trim() + '</h3><div class="tabella">' + righeHtml + '</div>';
+  });
+  return html;
+}
+
+function scaricaPdf(header, riga) {
+  applicaRiga(header, riga);
+  document.getElementById('formFattibilita').requestSubmit();
+  document.getElementById('riepilogoDati').innerHTML = '<h3 class="sub" style="margin-top:36px;">Dati inseriti per questo salvataggio</h3>' + generaRiepilogoDati();
+  document.title = 'Studio di fattibilità — ' + formattaData(riga[0]);
+  setTimeout(function(){ window.print(); }, 100);
+}
+
+function caricaListaSalvataggi() {
+  const box = document.getElementById('listaSalvataggi');
+  fetch('https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_PATH + '?t=' + Date.now())
+    .then(function(r){ if (!r.ok) throw new Error('nessun file'); return r.text(); })
+    .then(function(testo){
+      const parsed = parseCsv(testo);
+      ultimaListaHeader = parsed.header;
+      ultimaListaRows = parsed.rows;
+      renderListaSalvataggi();
+    })
+    .catch(function(){
+      ultimaListaHeader = [];
+      ultimaListaRows = [];
+      box.innerHTML = '<p class="help">Nessun salvataggio ancora.</p>';
+    });
+}
+
+function renderListaSalvataggi() {
+  const box = document.getElementById('listaSalvataggi');
+  if (!ultimaListaRows.length) {
+    box.innerHTML = '<p class="help">Nessun salvataggio ancora.</p>';
+    return;
+  }
+  let html = '';
+  ultimaListaRows.forEach(function(riga, i){
+    html += '<div class="salvataggio-riga">';
+    html += '<span>' + formattaData(riga[0]) + '</span>';
+    html += '<button type="button" class="btn-piccolo" data-azione="carica" data-i="' + i + '">Carica</button>';
+    html += '<button type="button" class="btn-piccolo btn-scarica" data-azione="scarica" data-i="' + i + '">Scarica PDF</button>';
+    html += '<button type="button" class="btn-piccolo btn-elimina" data-azione="elimina" data-i="' + i + '">Elimina</button>';
+    html += '</div>';
+  });
+  html += '<p class="help" style="margin-top:8px;">' + ultimaListaRows.length + ' di ' + MAX_SALVATAGGI + ' salvataggi usati.</p>';
+  box.innerHTML = html;
+  box.querySelectorAll('[data-azione="carica"]').forEach(function(b){
+    b.addEventListener('click', function(){
+      applicaRiga(ultimaListaHeader, ultimaListaRows[parseInt(b.getAttribute('data-i'), 10)]);
+      document.getElementById('formFattibilita').requestSubmit();
+    });
+  });
+  box.querySelectorAll('[data-azione="scarica"]').forEach(function(b){
+    b.addEventListener('click', function(){
+      scaricaPdf(ultimaListaHeader, ultimaListaRows[parseInt(b.getAttribute('data-i'), 10)]);
+    });
+  });
+  box.querySelectorAll('[data-azione="elimina"]').forEach(function(b){
+    b.addEventListener('click', function(){
+      const i = parseInt(b.getAttribute('data-i'), 10);
+      const ts = ultimaListaRows[i][0];
+      if (!confirm('Eliminare il salvataggio del ' + formattaData(ts) + '?')) return;
+      // Identifica la riga da eliminare per timestamp, non per posizione: se la lista cambia
+      // tra il caricamento e la conferma, elimina comunque la riga giusta (o segnala che non c'è più).
+      avviaAzione({ tipo: 'elimina', timestamp: ts }, 'Elimini il salvataggio del ' + formattaData(ts) + '. Incolla il token GitHub per confermare.');
+    });
+  });
+}
+
+// Il token, se l'utente sceglie di "ricordarlo", resta solo in questo browser (localStorage),
+// non viene mai scritto nel codice della pagina né inviato a nessuno tranne GitHub stesso.
+const TOKEN_KEY = 'sff_gh_token';
+function tokenSalvato() { return localStorage.getItem(TOKEN_KEY) || ''; }
+function aggiornaBottoneDimentica() {
+  document.getElementById('btnDimentica').style.display = tokenSalvato() ? 'inline-block' : 'none';
+}
+
+// Punto d'ingresso comune per Salva/Elimina: se un token è già ricordato lo usa subito,
+// altrimenti mostra la casella per incollarlo (con l'opzione di ricordarlo per la prossima volta).
+function avviaAzione(azione, messaggioBox) {
+  const t = tokenSalvato();
+  if (t) { eseguiScrittura(t, azione); return; }
+  azionePendente = azione;
+  document.getElementById('tokenBoxMsg').textContent = messaggioBox;
+  document.getElementById('tokenBox').style.display = 'block';
+  document.getElementById('githubToken').focus();
+}
+
+function eseguiScrittura(token, azione) {
+  const stato = document.getElementById('statoSalvataggio');
+  stato.style.display = 'block';
+  stato.textContent = 'Operazione in corso...';
+
+  const apiUrl = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH;
+  fetch(apiUrl, { headers: { Authorization: 'Bearer ' + token } })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(esistente){
+      let header, rows;
+      if (esistente) {
+        const parsed = parseCsv(base64Decode(esistente.content));
+        header = parsed.header; rows = parsed.rows;
+      } else {
+        header = ['timestamp'].concat(idsCampiForm());
+        rows = [];
+      }
+
+      let messaggio;
+      if (azione.tipo === 'salva') {
+        if (rows.length >= MAX_SALVATAGGI) throw new Error('limite di ' + MAX_SALVATAGGI + ' salvataggi raggiunto');
+        const nuovaRiga = header.map(function(col){
+          if (col === 'timestamp') return new Date().toISOString();
+          const el = document.getElementById(col);
+          return el ? el.value : '';
+        });
+        rows.push(nuovaRiga);
+        messaggio = 'Aggiunge un salvataggio del calcolatore';
+      } else {
+        const idx = rows.findIndex(function(r){ return r[0] === azione.timestamp; });
+        if (idx === -1) throw new Error('salvataggio non trovato (forse già eliminato altrove)');
+        rows.splice(idx, 1);
+        messaggio = 'Elimina un salvataggio del calcolatore';
+      }
+
+      const contenuto = base64Encode(serializeCsv(header, rows));
+      return fetch(apiUrl, {
+        method: 'PUT',
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: messaggio, content: contenuto, branch: GH_BRANCH, sha: esistente ? esistente.sha : undefined })
+      });
+    })
+    .then(function(r){
+      if (!r.ok) return r.text().then(function(t){ throw new Error('risposta ' + r.status + ': ' + t); });
+      stato.textContent = '✅ Fatto.';
+      document.getElementById('githubToken').value = '';
+      document.getElementById('tokenBox').style.display = 'none';
+      azionePendente = null;
+      caricaListaSalvataggi();
+    })
+    .catch(function(err){
+      let msg = '⚠️ Operazione non riuscita: ' + err.message;
+      if (err.message.indexOf('401') !== -1 || err.message.indexOf('403') !== -1) {
+        msg += ' — se avevi un token ricordato su questo telefono potrebbe essere scaduto: dimenticalo e incollane uno nuovo.';
+      }
+      stato.textContent = msg;
+    });
+}
+
+document.getElementById('btnSalva').addEventListener('click', function(){
+  if (ultimaListaRows.length >= MAX_SALVATAGGI) {
+    const stato = document.getElementById('statoSalvataggio');
+    stato.style.display = 'block';
+    stato.textContent = '⚠️ Hai già ' + MAX_SALVATAGGI + ' salvataggi. Eliminane uno dalla lista qui sopra prima di salvarne uno nuovo.';
+    return;
+  }
+  avviaAzione({ tipo: 'salva' }, 'Incolla il token GitHub per salvare i dati inseriti nel form.');
+});
+
+document.getElementById('btnDimentica').addEventListener('click', function(){
+  localStorage.removeItem(TOKEN_KEY);
+  aggiornaBottoneDimentica();
+  const stato = document.getElementById('statoSalvataggio');
+  stato.style.display = 'block';
+  stato.textContent = 'Token dimenticato su questo telefono: la prossima volta te lo richiederò.';
+});
+
+document.getElementById('btnConferma').addEventListener('click', function(){
+  const token = document.getElementById('githubToken').value.trim();
+  const stato = document.getElementById('statoSalvataggio');
+  stato.style.display = 'block';
+  if (!token) { stato.textContent = '⚠️ Incolla il token prima di confermare.'; return; }
+  if (!azionePendente) { stato.textContent = '⚠️ Nessuna operazione in corso.'; return; }
+  if (document.getElementById('ricordaToken').checked) {
+    localStorage.setItem(TOKEN_KEY, token);
+    aggiornaBottoneDimentica();
+  }
+  const azione = azionePendente;
+  eseguiScrittura(token, azione);
+});
+
+aggiornaBottoneDimentica();
+caricaListaSalvataggi();
 </script>
 
 </body>

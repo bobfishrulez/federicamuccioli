@@ -219,8 +219,78 @@ salvataggio, nessun reload, nessun invio dati altrove).
   avviamento — sono condizionati dai rispettivi toggle (0 se disattivati). Le
   voci di allestimento (non lo stock) entrano anche in `capex_ammortizzabile`.
 
+## Salvataggi online (GitHub)
+Il file non è più puramente standalone: legge/scrive un CSV pubblico nel
+repository (`studio/salvataggi.csv`) per permettere di salvare compilazioni
+del form e ritrovarle riaprendo la pagina, anche da telefono. Dettagli:
+
+- **Repo**: `bobfishrulez/federicamuccioli`, branch `main` (hardcoded nelle
+  costanti `GH_OWNER`/`GH_REPO`/`GH_BRANCH`/`GH_PATH` in cima al blocco
+  "SALVATAGGI ONLINE"). Se il repo cambia nome/owner, aggiornare lì.
+- **Lettura = pubblica, senza credenziali**: la lista si carica da
+  `raw.githubusercontent.com/.../studio/salvataggi.csv` con un semplice
+  `fetch`, nessun token. Chiunque apra la pagina vede gli stessi
+  salvataggi — è voluto (richiesta esplicita: "chiunque apre la pagina vede
+  i risultati").
+- **Scrittura (salva/elimina) = richiede un token GitHub**, incollato
+  dall'utente in un campo password al momento, mai scritto nel codice della
+  pagina. Usa l'API Contents di GitHub (`GET`+`PUT` su
+  `api.github.com/repos/.../contents/studio/salvataggi.csv`) con
+  `Authorization: Bearer <token>`. Serve un Personal Access Token
+  fine-grained limitato a quel repo con permesso "Contents: Read and
+  write" — istruire l'utente a NON usare un token con accesso a tutti i
+  repo.
+- **Formato CSV**: prima riga = intestazione con `timestamp` + l'id di ogni
+  campo del form (nell'ordine DOM al momento del **primo** salvataggio mai
+  fatto — le righe successive riusano quell'intestazione per restare
+  compatibili, anche se il form cambia in futuro; campi non più presenti
+  nel form vengono ignorati in lettura, campi nuovi nel form NON vengono
+  aggiunti automaticamente alle vecchie colonne). Se il form cambia
+  sensibilmente, valuta di ripartire da un CSV vuoto piuttosto che tenerlo
+  compatibile all'infinito.
+- **Limite di 10 righe** (`MAX_SALVATAGGI`): il pulsante "Salva" si blocca
+  lato UI se `ultimaListaRows.length >= 10`, e il salvataggio vero e
+  proprio ri-verifica il limite sul contenuto appena riletto da GitHub
+  (protezione contro il caso in cui la lista in pagina sia stale).
+- **Eliminazione per timestamp, non per indice**: il pulsante Elimina
+  cattura il valore di `timestamp` della riga al momento del click, e al
+  conferma lo ricerca nel CSV appena riletto da GitHub (`findIndex`) invece
+  di fidarsi della posizione — evita di cancellare la riga sbagliata se il
+  file è cambiato nel frattempo.
+- **Tre azioni per riga**: Carica (ripopola il form e ricalcola, via
+  `applicaRiga` + `form.requestSubmit()`), Scarica PDF (vedi sotto), Elimina
+  (con `confirm()` di conferma, poi stesso flusso di scrittura di Salva).
+- **Token ricordato nel browser** (`localStorage`, chiave `sff_gh_token`,
+  vedi `tokenSalvato()`/`avviaAzione()`): se presente, Salva/Elimina lo
+  usano subito senza mostrare la casella di inserimento. La prima volta (o
+  dopo aver premuto "Dimentica il token") la casella appare con una
+  checkbox "Ricorda questo token" (spuntata di default) che, se lasciata
+  attiva, lo salva in `localStorage` dopo la conferma. **Deciso così su
+  richiesta esplicita dell'utente**, che voleva evitare di incollare il
+  token a ogni salvataggio: GitHub non permette di limitare un token a un
+  singolo file del repo (solo a livello di intero repository), quindi
+  l'alternativa "nessun token mai" avrebbe richiesto un servizio esterno
+  separato dal repository — scartata per restare su un'unica piattaforma.
+  Il token resta comunque SOLO in quel browser/telefono, mai nel codice
+  della pagina.
+
+## Esportazione PDF
+Nessuna libreria PDF: usa `window.print()` con un foglio `@media print`
+dedicato. Il pulsante "Scarica PDF" di una riga (`scaricaPdf()`) ripopola il
+form con quei dati, ricalcola, genera un riepilogo leggibile di tutti i
+campi del form in `#riepilogoDati` (nascosto a schermo, mostrato solo in
+stampa — riusa le classi `.riga`/`.cella`/`.etichetta`/`.valore` della UI
+risultati per coerenza visiva) e dopo un breve `setTimeout` chiama
+`window.print()`. In stampa, CSS nasconde form/salvataggi-box/salva-box e
+mostra `#riepilogoDati`: nel PDF risultante restano solo risultati calcolati
++ riepilogo dei dati inseriti. Su mobile l'utente sceglie "Salva come PDF"
+dal dialogo di stampa nativo (Android Chrome) o dal foglio di condivisione
+(iOS Safari) — non è un download automatico, è il flusso standard del
+browser, zero dipendenze esterne.
+
 ## Possibili prossimi step
-- Aggiungere un pulsante "esporta risultati in PDF/CSV"
+- Autenticazione GitHub via OAuth device flow invece del token incollato a
+  mano, se il flusso attuale risulta scomodo nell'uso quotidiano
 - Verificare con fonti ufficiali (bando MiC, commercialista, CCNL Commercio)
   le voci segnalate come "da verificare" sopra, prima di usare lo strumento
   per una domanda di bando reale
