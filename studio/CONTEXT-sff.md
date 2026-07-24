@@ -322,6 +322,23 @@ prima un modello di come il traffico/i ricavi scalano con i giorni di
 apertura (non è banale: dipende dal bacino di utenza locale) — non
 aggiungerlo senza quel pezzo, o si ripete lo stesso errore.
 
+## Validazione dei campi
+- `giorni_apertura` e `ore_apertura_giorno` sono **`<select>`**, non input
+  liberi: non è fisicamente possibile scegliere più di 7 giorni/settimana o
+  un numero di ore assurdo. `num()` funziona invariato su un `<select>`
+  (legge `.value` come su un input), nessuna modifica JS necessaria per
+  questo cambio.
+- Tutti gli altri ~85 campi numerici hanno attributi HTML5 `min`/`max`
+  (range plausibili per ciascun campo, non hard limit di dominio — es.
+  `costo_lavori` max 500.000€ è "abbastanza alto da non essere mai un
+  vincolo reale", non un tetto di business). Il browser blocca in automatico
+  `form.requestSubmit()` (usato da Calcola, e anche da Carica/Scarica PDF
+  quando ripopolano il form da un salvataggio) se un valore è fuori range,
+  mostrando il proprio messaggio di validazione — nessun JS custom serve
+  per questo. Utile anche come rete di sicurezza se si carica un vecchio
+  salvataggio con valori scritti prima che questi limiti esistessero.
+  Se aggiungi un campo numerico nuovo, aggiungigli `min`/`max` per coerenza.
+
 ## Possibili prossimi step
 - Autenticazione GitHub via OAuth device flow invece del token incollato a
   mano, se il flusso attuale risulta scomodo nell'uso quotidiano
