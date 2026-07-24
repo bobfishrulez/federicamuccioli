@@ -303,6 +303,20 @@ dal dialogo di stampa nativo (Android Chrome) o dal foglio di condivisione
 (iOS Safari) — non è un download automatico, è il flusso standard del
 browser, zero dipendenze esterne.
 
+## Attenzione: headers[0] in tabella() è un segnaposto, va sempre incluso
+Bug reale trovato e corretto: `tabella(headers, righe)` non etichetta mai
+`c[0]` (è il titolo della card, senza etichetta) — etichetta `c[1]` con
+`headers[1]`, `c[2]` con `headers[2]`, ecc. Quindi **l'array `headers` deve
+avere sempre un elemento in più di quanti valori etichettati hai in `c`**,
+con `headers[0]` come segnaposto mai renderizzato (es. `'Voce'`, `'Giorni'`
+— il nome non conta, basta che occupi la posizione 0). La tabella
+"Effetto dei giorni di apertura" aveva `headers` con un elemento in meno
+(mancava il segnaposto), quindi ogni etichetta appariva spostata di una
+colonna: "Part-time" mostrava le ore totali, "Libri/giorno" mostrava il
+part-time (e quando quello era 0, appariva "—" sotto "Libri/giorno",
+apparentemente senza motivo). Se aggiungi una nuova `tabella()`, conta
+sempre `headers.length === c.length` per ogni riga.
+
 ## Effetto dei giorni di apertura (confronto, non ottimizzatore)
 `simulaGiorni(g)` rifà la catena di calcoli che dipendono da `giorni_apertura`
 (ore totali → part-time → costi fissi → ricavo prodotti → target libri) per
