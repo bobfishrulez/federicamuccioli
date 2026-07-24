@@ -1091,7 +1091,7 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
 
   html += '<h3 class="sub">Effetto dei giorni di apertura</h3>';
   html += `<p><strong>⚠️ Attenzione:</strong> questa tabella tiene fissi clienti, eventi e tutti gli altri ricavi indipendentemente dai giorni di apertura, come se il traffico si "comprimesse" tutto sui giorni rimasti. Nella realtà è più probabile che aprendo meno giorni si perda una parte dei clienti, non solo che si sposti — quindi le colonne con pochi giorni sono probabilmente troppo ottimistiche. Usala per capire l'effetto dei costi (soprattutto il part-time, che scatta superata una certa soglia di ore), <strong>non</strong> come indicazione di quanti giorni conviene aprire.</p>`;
-  html += tabella(['Ore/settimana', 'Part-time', 'Libri/giorno', 'Libri/settimana'], confrontoGiorni.map(function(r){
+  html += tabella(['Giorni', 'Ore/settimana', 'Part-time', 'Libri/giorno', 'Libri/settimana'], confrontoGiorni.map(function(r){
     const cls = r.giorni === giorni_apertura ? 'sezione-titolo' : '';
     return { cls: cls, c: [
       r.giorni + ' giorni/settimana' + (r.giorni === giorni_apertura ? ' (attuale)' : ''),
