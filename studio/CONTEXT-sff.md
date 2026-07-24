@@ -227,9 +227,15 @@ del form e ritrovarle riaprendo la pagina, anche da telefono. Dettagli:
 - **Repo**: `bobfishrulez/federicamuccioli`, branch `main` (hardcoded nelle
   costanti `GH_OWNER`/`GH_REPO`/`GH_BRANCH`/`GH_PATH` in cima al blocco
   "SALVATAGGI ONLINE"). Se il repo cambia nome/owner, aggiornare lì.
-- **Lettura = pubblica, senza credenziali**: la lista si carica da
-  `raw.githubusercontent.com/.../studio/salvataggi.csv` con un semplice
-  `fetch`, nessun token. Chiunque apra la pagina vede gli stessi
+- **Lettura = pubblica, senza credenziali**: la lista si carica dall'API
+  Contents di GitHub (`api.github.com/repos/.../contents/...`, senza
+  `Authorization`: funziona senza token su un repo pubblico), non da
+  `raw.githubusercontent.com`. Quest'ultimo è stato scartato dopo un bug
+  reale: la sua cache lato GitHub può restare indietro qualche minuto
+  rispetto all'ultimo commit, facendo sembrare che un salvataggio/
+  eliminazione "non fosse andato a buon fine" quando in realtà la scrittura
+  era riuscita, solo la rilettura mostrava dati vecchi. L'API riflette lo
+  stato vero del repository. Chiunque apra la pagina vede gli stessi
   salvataggi — è voluto (richiesta esplicita: "chiunque apre la pagina vede
   i risultati").
 - **Scrittura (salva/elimina) = richiede un token GitHub**, incollato

@@ -1190,10 +1190,16 @@ function scaricaPdf(header, riga) {
 
 function caricaListaSalvataggi() {
   const box = document.getElementById('listaSalvataggi');
-  fetch('https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_PATH + '?t=' + Date.now())
-    .then(function(r){ if (!r.ok) throw new Error('nessun file'); return r.text(); })
-    .then(function(testo){
-      const parsed = parseCsv(testo);
+  // Legge dall'API di GitHub (non da raw.githubusercontent.com): quest'ultimo passa da una
+  // cache che può restare indietro qualche minuto rispetto all'ultimo salvataggio/eliminazione.
+  // L'API riflette lo stato vero del repository, e non richiede token per un repository pubblico.
+  fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH + '?ref=' + GH_BRANCH + '&t=' + Date.now(), {
+    headers: { Accept: 'application/vnd.github.v3+json' },
+    cache: 'no-store'
+  })
+    .then(function(r){ if (!r.ok) throw new Error('nessun file'); return r.json(); })
+    .then(function(dati){
+      const parsed = parseCsv(base64Decode(dati.content));
       ultimaListaHeader = parsed.header;
       ultimaListaRows = parsed.rows;
       renderListaSalvataggi();
@@ -1270,7 +1276,7 @@ function eseguiScrittura(token, azione) {
   stato.textContent = 'Operazione in corso...';
 
   const apiUrl = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH;
-  fetch(apiUrl, { headers: { Authorization: 'Bearer ' + token } })
+  fetch(apiUrl, { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(esistente){
       let header, rows;
