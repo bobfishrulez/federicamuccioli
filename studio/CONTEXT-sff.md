@@ -303,6 +303,25 @@ dal dialogo di stampa nativo (Android Chrome) o dal foglio di condivisione
 (iOS Safari) — non è un download automatico, è il flusso standard del
 browser, zero dipendenze esterne.
 
+## Effetto dei giorni di apertura (confronto, non ottimizzatore)
+`simulaGiorni(g)` rifà la catena di calcoli che dipendono da `giorni_apertura`
+(ore totali → part-time → costi fissi → ricavo prodotti → target libri) per
+g=1..7, a parità di tutti gli altri campi, e la tabella "Effetto dei giorni
+di apertura" nei risultati mostra il confronto, con la riga dei giorni
+attualmente impostati evidenziata. **Deliberatamente non calcola/segnala un
+"numero ottimale" di giorni**: la prima versione lo faceva (minimizzando i
+libri/settimana), ma è stata tolta su segnalazione esplicita dell'utente —
+il modello tiene fissi clienti/ricavi indipendentemente dai giorni di
+apertura, come se il traffico si comprimesse tutto sui giorni rimasti;
+nella realtà aprendo meno giorni si perde probabilmente una parte dei
+clienti, non solo si sposta. La tabella resta utile per vedere l'effetto
+dei costi (soglia part-time soprattutto), ma un avviso esplicito nei
+risultati dice di non usarla come indicazione di quanti giorni aprire. Se
+in futuro si vuole un vero confronto "quanti giorni aprire", servirebbe
+prima un modello di come il traffico/i ricavi scalano con i giorni di
+apertura (non è banale: dipende dal bacino di utenza locale) — non
+aggiungerlo senza quel pezzo, o si ripete lo stesso errore.
+
 ## Possibili prossimi step
 - Autenticazione GitHub via OAuth device flow invece del token incollato a
   mano, se il flusso attuale risulta scomodo nell'uso quotidiano

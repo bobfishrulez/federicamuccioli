@@ -940,6 +940,42 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
   const ore_extra_servizi_sett = (fabbisogno_da_coprire_con_libri > 0 && tariffa_servizi_esterni > 0)
     ? (fabbisogno_da_coprire_con_libri / WEEKS) / tariffa_servizi_esterni : null;
 
+  // ---------- CONFRONTO GIORNI DI APERTURA ----------
+  // Rifà la catena di calcoli che dipendono da giorni_apertura (ore totali → part-time →
+  // costi fissi → ricavo prodotti → fabbisogno da coprire coi libri) per ogni valore da 1 a 7,
+  // tenendo fissi tutti gli altri campi del form. Aprire di più diluisce il target giornaliero
+  // di libri ma può far scattare un part-time molto più caro: il "migliore" è quello con il
+  // minor totale di libri/settimana, non il minor libri/giorno (che da solo può ingannare).
+  function simulaGiorni(g) {
+    const oreVenditaG = g * ore_apertura_giorno;
+    const tempoMortoG = oreVenditaG * (perc_tempo_morto_utilizzabile / 100);
+    const eccedenteG = Math.max(0, ore_assorbibili_sett - tempoMortoG);
+    const oreTotaliG = oreVenditaG + eccedenteG + ore_svolgimento_evento_libreria_sett
+                      + ore_eventi_terzi_totali_sett + ore_servizi_esterni + ore_commerciale_terzi
+                      + ore_entrate_fisse_sett;
+    const ptNecessarieG = Math.max(0, oreTotaliG - ore_max_titolare_sett);
+    const costoPtG = ptNecessarieG * WEEKS * costo_orario_parttime
+                    + (oreTotaliG * settimane_assenza_annue * costo_orario_parttime) / 12;
+
+    const giorniMeseG = g * WEEKS;
+    const ricavoProdottiG = vendi_prodotti ? prodotti_al_giorno * scontrino_prodotto * (margine_prodotto_perc / 100) * giorniMeseG : 0;
+    const altriRicaviG = ricavo_eventi_libreria_mese + ricavo_eventi_terzi_mese + ricavoProdottiG
+                        + ricavo_abbonamenti_mese + ricavo_workshop_mese + ricavo_oggetti_mese
+                        + ricavo_servizi_mese + entrate_fisse_esistenti;
+    const baseIncassiPosG = ricavo_eventi_libreria_mese + ricavoProdottiG + ricavo_abbonamenti_mese
+                           + ricavo_workshop_mese + ricavo_oggetti_mese;
+    const cfTotaleG = cf_sola_con_buffer + costoPtG + baseIncassiPosG * (commissione_pos_perc / 100) + rata_mutuo_mensile;
+    const fabbisognoG = cfTotaleG + stipendio_lordo_necessario + (includi_ammortamento ? ammortamento_mensile : 0);
+
+    const daLibriG = fabbisognoG - altriRicaviG;
+    const libriGiornoG = (daLibriG > 0 && margine_unitario_libro > 0 && giorniMeseG > 0)
+      ? (daLibriG / margine_unitario_libro) / giorniMeseG : 0;
+
+    return { giorni: g, oreTotaliG, ptNecessarieG, libriGiornoG, libriSettimanaG: libriGiornoG * g };
+  }
+  const confrontoGiorni = [];
+  for (let g = 1; g <= 7; g++) confrontoGiorni.push(simulaGiorni(g));
+
   // ---------- STEP 5: SCENARIO PRUDENTE ----------
   const buffer_ricavi_prudente_perc = num('buffer_ricavi_prudente_perc', 20);
   const ricavi_variabili_regime = ricavo_totale_stimato - entrate_fisse_esistenti;
@@ -1039,6 +1075,19 @@ document.getElementById('formFattibilita').addEventListener('submit', function(e
       { c: ['Ore in più di servizi esterni a settimana', ore_extra_servizi_sett !== null ? n1(ore_extra_servizi_sett) + ' ore/sett in più' : 'n/d (dati insufficienti)'] }
     ]);
   }
+
+  html += '<h3 class="sub">Effetto dei giorni di apertura</h3>';
+  html += `<p><strong>⚠️ Attenzione:</strong> questa tabella tiene fissi clienti, eventi e tutti gli altri ricavi indipendentemente dai giorni di apertura, come se il traffico si "comprimesse" tutto sui giorni rimasti. Nella realtà è più probabile che aprendo meno giorni si perda una parte dei clienti, non solo che si sposti — quindi le colonne con pochi giorni sono probabilmente troppo ottimistiche. Usala per capire l'effetto dei costi (soprattutto il part-time, che scatta superata una certa soglia di ore), <strong>non</strong> come indicazione di quanti giorni conviene aprire.</p>`;
+  html += tabella(['Ore/settimana', 'Part-time', 'Libri/giorno', 'Libri/settimana'], confrontoGiorni.map(function(r){
+    const cls = r.giorni === giorni_apertura ? 'sezione-titolo' : '';
+    return { cls: cls, c: [
+      r.giorni + ' giorni/settimana' + (r.giorni === giorni_apertura ? ' (attuale)' : ''),
+      n1(r.oreTotaliG) + ' h',
+      r.ptNecessarieG > 0 ? n1(r.ptNecessarieG) + ' h' : '—',
+      n1(r.libriGiornoG),
+      n1(r.libriSettimanaG)
+    ] };
+  }));
 
   html += '<h3 class="sub">Scenario prudente</h3>';
   html += `<p>Confronto tra lo scenario "base" (i valori che hai inserito) e uno scenario prudente in cui i ricavi variabili sono ridotti del ${n1(buffer_ricavi_prudente_perc)}% (le entrate fisse già esistenti restano invariate).</p>`;
