@@ -121,8 +121,17 @@ salvataggio, nessun reload, nessun invio dati altrove).
   da verificare col bando MiC ufficiale se si attiva la polizza fideiussoria.
 - Il buffer sui costi fissi (Step 3) si applica solo a `cf_sola` (le voci
   "morbide"), non a part-time/POS/rata prestito, che sono già importi precisi.
-- Ogni campo ha un `<div class="help">` — se aggiungi un campo nuovo,
-  aggiungine uno anche per lui: è la convenzione di leggibilità del file.
+- **Layout compatto, pensato per telefono**: ogni campo è
+  `<label>testo breve</label><input/select><button class="info-btn">ⓘ</button>`
+  su una riga sola (`.campo-riga{flex-wrap:nowrap}`), con la spiegazione
+  completa in `<div class="help" hidden>` — nascosta di default, mostrata
+  solo cliccando ⓘ. Il toggle è un **unico listener delegato**
+  (`document.addEventListener('click', ...)` cerca `.info-btn`, poi
+  `closest('.campo')` per trovare il suo `.help`) invece di un listener per
+  campo: se aggiungi un campo nuovo, ti basta seguire la stessa struttura
+  HTML, non serve aggiungere altro JS. Le etichette sono state accorciate
+  deliberatamente (2-5 parole): il testo completo resta nel campo `.help`,
+  non perso, solo nascosto finché non lo apri.
 - **Risultati come card, non tabelle HTML**: niente `<table>`/`<tr>`/`<td>` da
   nessuna parte nei risultati (prima c'erano, con due tentativi di renderli
   responsive — scroll orizzontale, poi data-label via JS — entrambi
